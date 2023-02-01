@@ -1,8 +1,11 @@
 package com.rbrauwers.newsapp.network
 
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.rbrauwers.newsapp.model.HeadlinesResponse
 import com.rbrauwers.newsapp.model.SourcesResponse
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -14,7 +17,10 @@ import javax.inject.Singleton
 
 @OptIn(ExperimentalSerializationApi::class)
 @Singleton
-internal class RetrofitClient @Inject constructor(json: Json) : NetworkDataSource {
+internal class RetrofitClient @Inject constructor(
+    @ApplicationContext context: Context,
+    json: Json
+) : NetworkDataSource {
 
     private val api: NewsApi =
         Retrofit.Builder()
@@ -35,6 +41,7 @@ internal class RetrofitClient @Inject constructor(json: Json) : NetworkDataSourc
 
                     chain.proceed(newRequest)
                 }
+                .addInterceptor(ChuckerInterceptor.Builder(context).build())
                 .build())
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
