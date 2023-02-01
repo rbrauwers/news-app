@@ -3,6 +3,7 @@ package com.rbrauwers.newsapp.network
 import com.rbrauwers.newsapp.model.HeadlinesResponse
 import com.rbrauwers.newsapp.model.SourcesResponse
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface NewsApi {
 
@@ -10,6 +11,6 @@ interface NewsApi {
     suspend fun getSources(): SourcesResponse
 
     @GET("v2/top-headlines")
-    suspend fun getHeadlines(): HeadlinesResponse
+    suspend fun getHeadlines(@Query("country") country: String): HeadlinesResponse
 
 }

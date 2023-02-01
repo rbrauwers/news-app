@@ -44,8 +44,8 @@ internal class RetrofitClient @Inject constructor(json: Json) : NetworkDataSourc
         return api.getSources()
     }
 
-    override suspend fun getHeadlines(): HeadlinesResponse {
-        return api.getHeadlines()
+    override suspend fun getHeadlines(country: String): HeadlinesResponse {
+        return api.getHeadlines(country)
     }
 
 }

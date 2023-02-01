@@ -7,6 +7,6 @@ interface NetworkDataSource {
 
     suspend fun getSources(): SourcesResponse
 
-    suspend fun getHeadlines(): HeadlinesResponse
+    suspend fun getHeadlines(country: String = "us"): HeadlinesResponse
 
 }
