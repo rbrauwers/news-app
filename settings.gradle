@@ -16,3 +16,6 @@ rootProject.name = "News app"
 include ':app'
 include ':core:model'
 include ':core:network'
+include ':core:database'
+include ':core:data'
+include ':core:common'
