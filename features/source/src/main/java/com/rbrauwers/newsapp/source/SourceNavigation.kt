@@ -1,4 +1,4 @@
-package com.rbrauwers.newsapp.headline
+package com.rbrauwers.newsapp.source
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
@@ -9,23 +9,23 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.rbrauwers.newsapp.ui.NewsAppNavigationBarItem
 
-fun NavController.navigateToHeadlines(navOptions: NavOptions? = null) {
-    this.navigate(headlineScreen.route, navOptions)
+fun NavController.navigateToSources(navOptions: NavOptions? = null) {
+    this.navigate(sourceScreen.route, navOptions)
 }
 
-fun NavGraphBuilder.headlinesScreen() {
-    composable(route = headlineScreen.route) {
-        HeadlinesRoute()
+fun NavGraphBuilder.sourcesScreen() {
+    composable(route = sourceScreen.route) {
+        SourcesRoute()
     }
 }
 
 @Composable
-fun RowScope.HeadlinesNavigationBarItem(
+fun RowScope.SourcesNavigationBarItem(
     navController: NavController,
     currentDestination: NavDestination?
 ) {
     NewsAppNavigationBarItem(
-        screen = headlineScreen,
+        screen = sourceScreen,
         navController = navController,
         currentDestination = currentDestination
     )

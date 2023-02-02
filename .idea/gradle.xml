@@ -20,6 +20,7 @@
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/headline" />
+            <option value="$PROJECT_DIR$/features/source" />
           </set>
         </option>
       </GradleProjectSettings>
