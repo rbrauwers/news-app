@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface HeadlineRepository {
 
-    suspend fun getHeadlines(): Flow<List<Article>>
+    fun getHeadlines(): Flow<List<Article>>
 
     suspend fun sync()
 
