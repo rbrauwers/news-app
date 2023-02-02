@@ -15,7 +15,7 @@ internal class SyncedHeadlineRepository @Inject constructor(
     private val dao: HeadlineDao
 ) : HeadlineRepository {
 
-    override suspend fun getHeadlines(): Flow<List<Article>> {
+    override fun getHeadlines(): Flow<List<Article>> {
         return dao.getHeadlines().map { it.map { article -> article.toExternalModel() } }
     }
 

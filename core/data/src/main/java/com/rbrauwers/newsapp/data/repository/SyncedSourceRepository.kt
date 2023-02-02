@@ -15,7 +15,7 @@ internal class SyncedSourceRepository @Inject constructor(
     private val dao: SourceDao
 ) : SourceRepository {
 
-    override suspend fun getSources(): Flow<List<NewsSource>> {
+    override fun getSources(): Flow<List<NewsSource>> {
         return dao.getSources().map { it.map { source -> source.toExternalModel() } }
     }
 
