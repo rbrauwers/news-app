@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class HeadlineViewModel @Inject constructor(
+internal class HeadlineViewModel @Inject constructor(
     private val headlineRepository: HeadlineRepository
 ) : ViewModel() {
 
@@ -36,7 +36,7 @@ class HeadlineViewModel @Inject constructor(
 
 }
 
-sealed interface HeadlineUiState {
+internal sealed interface HeadlineUiState {
     data class Success(val headlines: List<Article>) : HeadlineUiState
     object Error : HeadlineUiState
     object Loading : HeadlineUiState
