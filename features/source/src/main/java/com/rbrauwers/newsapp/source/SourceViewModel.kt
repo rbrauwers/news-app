@@ -20,14 +20,14 @@ internal class SourceViewModel @Inject constructor(
 ) : ViewModel() {
 
     val sourceUiState: StateFlow<SourceUiState> =
-        produceHeadlineUiState()
+        produceSourceUiState()
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = SourceUiState.Loading
             )
 
-    private fun produceHeadlineUiState(): Flow<SourceUiState> {
+    private fun produceSourceUiState(): Flow<SourceUiState> {
         return sourceRepository
             .getSources()
             .asResult()

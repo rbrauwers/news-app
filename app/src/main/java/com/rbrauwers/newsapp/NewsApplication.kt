@@ -1,10 +1,12 @@
 package com.rbrauwers.newsapp
 
 import android.app.Application
+import com.rbrauwers.newsapp.data.repository.HeadlineRepository
 import com.rbrauwers.newsapp.data.repository.SourceRepository
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,7 +17,7 @@ class NewsApplication : Application() {
     lateinit var sourceRepository: SourceRepository
 
     @Inject
-    lateinit var headlinesRepository: SourceRepository
+    lateinit var headlinesRepository: HeadlineRepository
 
     override fun onCreate() {
         super.onCreate()
@@ -25,6 +27,7 @@ class NewsApplication : Application() {
 
     private fun sync() {
         MainScope().launch(context = Dispatchers.IO) {
+            delay(5000)
             sourceRepository.sync()
             headlinesRepository.sync()
         }
