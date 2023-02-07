@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rbrauwers.newsapp.common.Result
 import com.rbrauwers.newsapp.common.asResult
+import com.rbrauwers.newsapp.common.converters.ConvertStringToDateTimeInstance
 import com.rbrauwers.newsapp.data.repository.HeadlineRepository
 import com.rbrauwers.newsapp.model.Article
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,7 +38,7 @@ internal class HeadlineViewModel @Inject constructor(
 }
 
 internal sealed interface HeadlineUiState {
-    data class Success(val headlines: List<Article>) : HeadlineUiState
+    data class Success(val headlines: List<ArticleUi>) : HeadlineUiState
     object Error : HeadlineUiState
     object Loading : HeadlineUiState
 }
@@ -46,6 +47,27 @@ private fun Result<List<Article>>.toHeadlineUiState(): HeadlineUiState {
     return when (this) {
         is Result.Loading -> HeadlineUiState.Loading
         is Result.Error -> HeadlineUiState.Error
-        is Result.Success -> HeadlineUiState.Success(data)
+        is Result.Success -> {
+            val converter = ConvertStringToDateTimeInstance()
+            HeadlineUiState.Success(data.map { it.toArticleUi(converter) })
+        }
     }
 }
+
+private fun Article.toArticleUi(
+    dateConverter: ConvertStringToDateTimeInstance
+) = ArticleUi(
+    id = id,
+    author = author,
+    title = title,
+    urlToImage = urlToImage,
+    publishedAt = dateConverter(publishedAt)
+)
+
+internal data class ArticleUi(
+    val id: Int,
+    val author: String?,
+    val title: String?,
+    val urlToImage: String?,
+    val publishedAt: String?
+)
