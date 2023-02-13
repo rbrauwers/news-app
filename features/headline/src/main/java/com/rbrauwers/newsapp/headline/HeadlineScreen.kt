@@ -1,5 +1,8 @@
 package com.rbrauwers.newsapp.headline
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -13,10 +16,9 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -29,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -127,6 +128,7 @@ private fun Headline(
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
         ) {
             val (author, title, date, image, web) = createRefs()
+            val context = LocalContext.current
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -185,14 +187,16 @@ private fun Headline(
             )
 
             FilledIconButton(
-                onClick = { },
+                onClick = {
+                    article.openUrl(context = context)
+                },
                 modifier = Modifier
                     .constrainAs(web) {
                         end.linkTo(image.end)
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                     }
             ) {
-                Icon(imageVector = Icons.Outlined.Info, contentDescription = "")
+                Icon(imageVector = Icons.Outlined.OpenInBrowser, contentDescription = "")
             }
         }
     }
@@ -207,6 +211,7 @@ private fun HeadlinePreview() {
             author = "Simpsons",
             title = "Inflation is super high is super high is super high is super high is super high",
             urlToImage = "https://images.pexels.com/photos/34299/herbs-flavoring-seasoning-cooking.jpg?cs=srgb&dl=pexels-pixabay-34299.jpg&fm=jpg&w=640&h=427&_gl=1*1urd5oa*_ga*MzQ2NzQzNzA3LjE2NzU3NTcwNzU.*_ga_8JE65Q40S6*MTY3NTc1NzA3NS4xLjEuMTY3NTc1NzEwNC4wLjAuMA..",
+            url = "https://google.com",
             publishedAt = "2023-01-02 10:21:00"
         )
     )
@@ -260,4 +265,13 @@ private fun HeadlinePreview2() {
             publishedAt = "date"
         )
     )
+}
+
+private fun ArticleUi.openUrl(context: Context) {
+    runCatching {
+        Uri.parse(url)
+    }.onSuccess {
+        val intent = Intent(Intent.ACTION_VIEW, it)
+        context.startActivity(intent)
+    }
 }

@@ -61,6 +61,7 @@ private fun Article.toArticleUi(
     author = if (author.isNullOrBlank()) "Author: N/A" else author,
     title = title,
     urlToImage = urlToImage,
+    url = url,
     publishedAt = dateConverter(publishedAt)
 )
 
@@ -69,5 +70,6 @@ internal data class ArticleUi(
     val author: String?,
     val title: String?,
     val urlToImage: String?,
+    val url: String?,
     val publishedAt: String?
 )
