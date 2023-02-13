@@ -146,7 +146,7 @@ private fun Headline(
             Text(
                 text = article.author.orEmpty(),
                 maxLines = 1,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.titleSmall,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.constrainAs(author) {
                     width = Dimension.fillToConstraints
@@ -157,8 +157,8 @@ private fun Headline(
 
             Text(
                 text = article.title.orEmpty(),
-                maxLines = 2,
-                style = MaterialTheme.typography.headlineSmall,
+                maxLines = 4,
+                style = MaterialTheme.typography.bodyLarge,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .constrainAs(title) {

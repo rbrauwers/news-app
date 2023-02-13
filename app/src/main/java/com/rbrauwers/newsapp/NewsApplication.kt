@@ -27,7 +27,6 @@ class NewsApplication : Application() {
 
     private fun sync() {
         MainScope().launch(context = Dispatchers.IO) {
-            delay(5000)
             sourceRepository.sync()
             headlinesRepository.sync()
         }
