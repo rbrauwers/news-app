@@ -14,7 +14,7 @@ class ConvertStringToDate {
 
         return runCatching {
             formatter.parse(string)
-        }.onFailure { println("qqq $it") }.getOrNull()
+        }.getOrNull()
     }
 
     companion object {

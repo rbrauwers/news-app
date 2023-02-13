@@ -25,7 +25,9 @@ internal class SyncedHeadlineRepository @Inject constructor(
                 .getHeadlines()
 
             if (response.status.isOk()) {
-                dao.upsertHeadlines(response.articles.map { it.toEntity() })
+                dao.upsertHeadlines(response.articles.map {
+                    it.toEntity()
+                })
             }
         }.onSuccess {
             println("SyncedHeadlineRepository::sync success")
