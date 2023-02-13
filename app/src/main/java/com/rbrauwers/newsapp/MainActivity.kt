@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.rbrauwers.newsapp.headline.HeadlinesNavigationBarItem
+import com.rbrauwers.newsapp.headline.headlineScreen
 import com.rbrauwers.newsapp.headline.headlinesScreen
 import com.rbrauwers.newsapp.network.NetworkDataSource
 import com.rbrauwers.newsapp.source.SourcesNavigationBarItem
@@ -48,18 +49,18 @@ private fun Content() {
         Scaffold(
             bottomBar = {
                 NavigationBar {
-                    SourcesBottomBar(navController = navController)
                     NewsBottomBar(navController = navController)
+                    SourcesBottomBar(navController = navController)
                 }
             }
         ) { innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = sourceScreen.route,
+                startDestination = headlineScreen.route,
                 modifier = Modifier.padding(innerPadding)
             ) {
-                sourcesScreen()
                 headlinesScreen()
+                sourcesScreen()
             }
         }
     }
