@@ -58,7 +58,7 @@ private fun Article.toArticleUi(
     dateConverter: ConvertStringToDateTimeInstance
 ) = ArticleUi(
     id = id,
-    author = author,
+    author = if (author.isNullOrBlank()) "Author: N/A" else author,
     title = title,
     urlToImage = urlToImage,
     publishedAt = dateConverter(publishedAt)
