@@ -42,7 +42,7 @@ fun NewsAppDefaultProgressIndicator(
 
 fun LazyListScope.newsAppDefaultProgressIndicatorItem(modifier: Modifier = Modifier) {
     item {
-        NewsAppDefaultProgressIndicator(modifier = Modifier)
+        NewsAppDefaultProgressIndicator(modifier = modifier)
     }
 }
 

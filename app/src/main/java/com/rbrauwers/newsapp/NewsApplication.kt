@@ -21,8 +21,7 @@ class NewsApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        // TODO KINE!!!
-        //sync()
+        sync()
     }
 
     private fun sync() {
