@@ -1,10 +1,11 @@
 # News app (Android)
 
-Android application that display news and his sources.<br><br>
-Data is fetched from the [News API](https://newsapi.org/).<br><br>
+Android application that display news and his sources.<br>
 The implementation follows [app architecture](https://developer.android.com/topic/architecture) principles, such as modularization, dependency injection, single source of truth, etc.<br>
-
 <img src="https://github.com/rbrauwers/news-app/blob/main/screenshots/headlines.png" alt="News app" width="200"/>
+
+## How it works
+Data is fetched from the [News API](https://newsapi.org/) and stored locally.
 
 ## Stack
 - UI: [Jetpack Compose](https://developer.android.com/jetpack/compose)
