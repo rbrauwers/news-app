@@ -40,9 +40,12 @@ fun NewsAppDefaultProgressIndicator(
     }
 }
 
-fun LazyListScope.newsAppDefaultProgressIndicatorItem(modifier: Modifier = Modifier) {
+fun LazyListScope.newsAppDefaultProgressIndicatorItem(
+    modifier: Modifier = Modifier,
+    placeOnCenter: Boolean = false
+) {
     item {
-        NewsAppDefaultProgressIndicator(modifier = modifier)
+        NewsAppDefaultProgressIndicator(modifier = modifier, placeOnCenter = placeOnCenter)
     }
 }
 

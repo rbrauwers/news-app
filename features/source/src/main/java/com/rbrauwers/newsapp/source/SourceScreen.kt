@@ -72,7 +72,7 @@ private fun SourcesScreen(
     ) {
         when (uiState) {
             is SourceUiState.Loading -> {
-                newsAppDefaultProgressIndicatorItem()
+                newsAppDefaultProgressIndicatorItem(placeOnCenter = true)
             }
             is SourceUiState.Error -> {
                 // TODO

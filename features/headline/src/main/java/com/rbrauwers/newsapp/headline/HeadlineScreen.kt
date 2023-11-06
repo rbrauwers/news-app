@@ -80,7 +80,7 @@ private fun HeadlinesScreen(
     ) {
         when (uiState) {
             is HeadlineUiState.Loading -> {
-                newsAppDefaultProgressIndicatorItem()
+                newsAppDefaultProgressIndicatorItem(placeOnCenter = true)
             }
             is HeadlineUiState.Error -> {
                 // TODO
