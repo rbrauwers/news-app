@@ -1,8 +1,8 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -25,12 +25,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -43,37 +43,41 @@ android {
 }
 
 dependencies {
+    implementation(libs.core.ktx)
+    implementation(libs.lifecyle.runtime)
+    implementation(libs.activity.compose)
+    implementation(libs.lifecyle.viewmodel)
+    implementation(libs.lifecyle.viewmodel.compose)
+    implementation(libs.lifecyle.compose)
 
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.6.0")
-
-    implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0-alpha05")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0-alpha05")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha05")
-
-    val composeBom = platform("androidx.compose:compose-bom:2023.01.00")
+    val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation(libs.compose.material)
+    implementation(libs.compose.icons.extended)
+    implementation(libs.compose.tooling.preview)
+    debugImplementation(libs.compose.tooling)
+    implementation(libs.navigation.compose)
 
-    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
-    implementation("com.google.dagger:hilt-android:2.44.2")
-    kapt("com.google.dagger:hilt-compiler:2.44.2")
+    implementation(libs.hilt.navigation.compose)
 
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation(libs.coil.compose)
+    implementation(libs.constraintlayout.compose)
 
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    testImplementation(testLibs.junit)
+    androidTestImplementation(testLibs.androidx.junit)
+    androidTestImplementation(testLibs.espresso.core)
+
+    androidTestImplementation(testLibs.compose.junit4)
+    debugImplementation(testLibs.compose.manifest)
 }
 
 kapt {
