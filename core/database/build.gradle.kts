@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.rbrauwers.newsapp.database"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 24

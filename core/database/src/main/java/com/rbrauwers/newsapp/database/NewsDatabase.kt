@@ -12,7 +12,8 @@ import com.rbrauwers.newsapp.database.model.NewsSourceEntity
         ArticleEntity::class,
         NewsSourceEntity::class
     ],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class NewsDatabase : RoomDatabase() {
 
