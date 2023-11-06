@@ -220,7 +220,7 @@ private fun HeadlinePreview() {
 
 // TODO: test this layout on next compose releases. It should work
 @Composable
-private fun Headline2(article: Article) {
+private fun Headline2(article: ArticleUi) {
     NewsAppTheme {
         Card(
             modifier = Modifier
@@ -255,14 +255,13 @@ private fun Headline2(article: Article) {
 @Composable
 private fun HeadlinePreview2() {
     Headline2(
-        article = Article(
+        article = ArticleUi(
+            id = 1,
             author = "Simpsons",
             title = "Inflation is super high is super high is super high is super high is super high",
-            content = null,
-            description = null,
-            url = "https://google.com",
             urlToImage = "https://images.pexels.com/photos/34299/herbs-flavoring-seasoning-cooking.jpg?cs=srgb&dl=pexels-pixabay-34299.jpg&fm=jpg&w=640&h=427&_gl=1*1urd5oa*_ga*MzQ2NzQzNzA3LjE2NzU3NTcwNzU.*_ga_8JE65Q40S6*MTY3NTc1NzA3NS4xLjEuMTY3NTc1NzEwNC4wLjAuMA..",
-            publishedAt = "date"
+            url = "https://google.com",
+            publishedAt = "2023-01-02 10:21:00"
         )
     )
 }
