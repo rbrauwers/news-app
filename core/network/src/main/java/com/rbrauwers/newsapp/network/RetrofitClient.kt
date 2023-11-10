@@ -36,7 +36,7 @@ internal class RetrofitClient @Inject constructor(
 
                     val newRequest = request
                         .newBuilder()
-                        .addHeader("X-Api-Key", "7b3a48cc5cc24801bdd280dde215dcd0")
+                        .addHeader("X-Api-Key", BuildConfig.NEWS_API_KEY)
                         .build()
 
                     chain.proceed(newRequest)

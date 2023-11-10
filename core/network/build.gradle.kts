@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.*
+
 plugins {
     id("com.rbrauwers.newapp.library.plugin")
     id("com.rbrauwers.newapp.hilt.plugin")
@@ -6,6 +9,18 @@ plugins {
 
 android {
     namespace = "com.rbrauwers.newsapp.network"
+
+    val properties = Properties().apply {
+        load(FileInputStream(File(rootProject.rootDir, "local.properties")))
+    }
+
+    defaultConfig {
+        buildConfigField("String", "NEWS_API_KEY", properties.getProperty("newsApiKey"))
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {

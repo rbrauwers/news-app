@@ -42,7 +42,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.rbrauwers.newsapp.model.Article
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
