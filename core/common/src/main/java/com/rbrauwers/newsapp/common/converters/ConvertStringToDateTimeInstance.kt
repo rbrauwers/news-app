@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
  */
 class ConvertStringToDateTimeInstance(
     private val convertStringToDate: ConvertStringToDate = ConvertStringToDate(),
-    private val dateStyle: Int = SimpleDateFormat.SHORT,
+    private val dateStyle: Int = SimpleDateFormat.MEDIUM,
     private val timeStyle: Int = SimpleDateFormat.SHORT
 ) {
 
