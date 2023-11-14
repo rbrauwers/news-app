@@ -54,7 +54,8 @@ import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 val headlineScreen = Screen(
     route = "headlines",
     title = R.string.headlines,
-    icon = Icons.Filled.List
+    icon = Icons.Filled.List,
+    isHome = true
 )
 
 @Composable

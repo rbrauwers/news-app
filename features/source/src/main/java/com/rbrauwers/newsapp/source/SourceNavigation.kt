@@ -2,6 +2,7 @@ package com.rbrauwers.newsapp.source
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
@@ -13,9 +14,9 @@ fun NavController.navigateToSources(navOptions: NavOptions? = null) {
     this.navigate(sourceScreen.route, navOptions)
 }
 
-fun NavGraphBuilder.sourcesScreen() {
+fun NavGraphBuilder.sourcesScreen(modifier: Modifier) {
     composable(route = sourceScreen.route) {
-        SourcesRoute()
+        SourcesRoute(modifier = modifier)
     }
 }
 
