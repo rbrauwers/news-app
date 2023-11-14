@@ -40,7 +40,8 @@ import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
 val sourceScreen = Screen(
     route = "sources",
     title = R.string.sources,
-    icon = Icons.Filled.Person
+    icon = Icons.Filled.Person,
+    isHome = true
 )
 
 @Composable

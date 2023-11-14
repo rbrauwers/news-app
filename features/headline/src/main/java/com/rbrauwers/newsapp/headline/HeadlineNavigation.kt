@@ -2,6 +2,7 @@ package com.rbrauwers.newsapp.headline
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
@@ -13,9 +14,9 @@ fun NavController.navigateToHeadlines(navOptions: NavOptions? = null) {
     this.navigate(headlineScreen.route, navOptions)
 }
 
-fun NavGraphBuilder.headlinesScreen() {
+fun NavGraphBuilder.headlinesScreen(modifier: Modifier) {
     composable(route = headlineScreen.route) {
-        HeadlinesRoute()
+        HeadlinesRoute(modifier = modifier)
     }
 }
 

@@ -5,16 +5,27 @@ package com.rbrauwers.newsapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,15 +40,15 @@ import androidx.navigation.compose.rememberNavController
 import com.rbrauwers.newsapp.headline.HeadlinesNavigationBarItem
 import com.rbrauwers.newsapp.headline.headlineScreen
 import com.rbrauwers.newsapp.headline.headlinesScreen
-import com.rbrauwers.newsapp.network.NetworkDataSource
+import com.rbrauwers.newsapp.info.infoScreen
+import com.rbrauwers.newsapp.info.navigateToInfo
 import com.rbrauwers.newsapp.source.SourcesNavigationBarItem
 import com.rbrauwers.newsapp.source.sourceScreen
 import com.rbrauwers.newsapp.source.sourcesScreen
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
-private val screens = listOf(headlineScreen, sourceScreen)
+private val screens = listOf(headlineScreen, sourceScreen, infoScreen)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -51,18 +62,21 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 private fun Content() {
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
-    val title = screens.firstOrNull {
+    val currentScreen = screens.firstOrNull {
         it.route == currentRoute
-    }?.title?.run {
+    }
+    val title = currentScreen?.title?.run {
         stringResource(id = this)
     } ?: ""
+
+    val bottomBarState = currentScreen?.isHome == true
 
     NewsAppTheme {
         Scaffold(
@@ -75,23 +89,59 @@ private fun Content() {
                         )
                     },
                     scrollBehavior = scrollBehavior,
-                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                    actions = {
+                        if (currentScreen?.isHome == true) {
+                            IconButton(
+                                onClick = {
+                                    navController.navigateToInfo()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = infoScreen.icon,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    },
+                    navigationIcon = {
+                        if (currentScreen?.isHome == false) {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
                 )
             },
             bottomBar = {
-                NavigationBar {
-                    NewsBottomBar(navController = navController)
-                    SourcesBottomBar(navController = navController)
+                AnimatedContent(
+                    targetState = bottomBarState,
+                    transitionSpec = {
+                        slideInVertically(initialOffsetY = { it }) togetherWith
+                        slideOutVertically(targetOffsetY = { it })
+                    }, label = ""
+                ) { isVisible ->
+                    if (isVisible) {
+                        NavigationBar {
+                            NewsBottomBar(navController = navController)
+                            SourcesBottomBar(navController = navController)
+                        }
+                    } else {
+                        Box(modifier = Modifier.fillMaxWidth())
+                    }
                 }
             }
         ) { innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = headlineScreen.route,
-                modifier = Modifier.padding(innerPadding)
+                startDestination = headlineScreen.route
             ) {
-                headlinesScreen()
-                sourcesScreen()
+                headlinesScreen(modifier = Modifier.padding(innerPadding))
+                sourcesScreen(modifier = Modifier.padding(innerPadding))
+                infoScreen(modifier = Modifier.padding(innerPadding))
             }
         }
     }
