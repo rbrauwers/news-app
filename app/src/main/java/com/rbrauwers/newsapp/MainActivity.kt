@@ -37,6 +37,8 @@ import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+private val screens = listOf(headlineScreen, sourceScreen)
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -54,6 +56,13 @@ class MainActivity : ComponentActivity() {
 private fun Content() {
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+    val title = screens.firstOrNull {
+        it.route == currentRoute
+    }?.title?.run {
+        stringResource(id = this)
+    } ?: ""
 
     NewsAppTheme {
         Scaffold(
@@ -61,7 +70,7 @@ private fun Content() {
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
-                            text = stringResource(id = R.string.app_name),
+                            text = title,
                             style = MaterialTheme.typography.titleLarge
                         )
                     },

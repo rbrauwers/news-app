@@ -112,7 +112,7 @@ private fun Headline(
 ) {
     Card(
         modifier = Modifier
-            .height(200.dp)
+            .height(216.dp)
             .fillMaxWidth()
             .padding(
                 top = if (isFirst) 12.dp else 4.dp,
@@ -182,7 +182,7 @@ private fun Headline(
                         MaterialTheme.colorScheme.onPrimary,
                         shape = MaterialTheme.shapes.small
                     )
-                    .padding(4.dp)
+                    .padding(8.dp)
             )
 
             FilledIconButton(
