@@ -3,7 +3,10 @@ package com.rbrauwers.newsapp.headline
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,12 +18,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -110,6 +115,9 @@ private fun Headline(
     isFirst: Boolean = false,
     isLast: Boolean = false
 ) {
+    val imageShape = RoundedCornerShape(8.dp)
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .height(216.dp)
@@ -120,6 +128,9 @@ private fun Headline(
                 start = 16.dp,
                 end = 16.dp
             )
+            .clickable {
+                article.openUrl(context = context)
+            }
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -127,7 +138,6 @@ private fun Headline(
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
         ) {
             val (author, title, date, image, web) = createRefs()
-            val context = LocalContext.current
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -138,7 +148,8 @@ private fun Headline(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(70.dp)
-                    .clip(CircleShape)
+                    .clip(imageShape)
+                    .border(border = BorderStroke(width = 1.dp, color = Color.Black), shape = imageShape)
                     .constrainAs(image) {
                         end.linkTo(parent.end)
                     }
@@ -185,17 +196,16 @@ private fun Headline(
                     .padding(8.dp)
             )
 
-            FilledIconButton(
-                onClick = {
-                    article.openUrl(context = context)
-                },
+            FilledIconToggleButton(
+                checked = isFirst,
+                onCheckedChange = { isChecked -> },
                 modifier = Modifier
                     .constrainAs(web) {
                         end.linkTo(image.end)
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                     }
             ) {
-                Icon(imageVector = Icons.Outlined.OpenInBrowser, contentDescription = "")
+                Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "")
             }
         }
     }
