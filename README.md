@@ -8,6 +8,12 @@ The implementation follows [app architecture](https://developer.android.com/topi
 ## How it works
 Data is fetched from the [News API](https://newsapi.org/) and stored locally.
 
+## Setup
+Create an [API Key](https://newsapi.org/account) and place it at `local.properties`:
+```
+newsApiKey=YOUR_API_KEY
+```
+
 ## Stack
 - UI: [Jetpack Compose](https://developer.android.com/jetpack/compose) + [Material](https://m3.material.io/develop/android/jetpack-compose) + [Coil](https://coil-kt.github.io/coil/)
 - Dependency injection: [Hilt](https://dagger.dev/hilt/)
