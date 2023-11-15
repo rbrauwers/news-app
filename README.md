@@ -9,8 +9,8 @@ The implementation follows [app architecture](https://developer.android.com/topi
 Data is fetched from the [News API](https://newsapi.org/) and stored locally.
 
 ## Stack
-- UI: [Jetpack Compose](https://developer.android.com/jetpack/compose)
+- UI: [Jetpack Compose](https://developer.android.com/jetpack/compose) + [Material](https://m3.material.io/develop/android/jetpack-compose) + [Coil](https://coil-kt.github.io/coil/)
 - Dependency injection: [Hilt](https://dagger.dev/hilt/)
-- Network: [Retrofit](https://square.github.io/retrofit/)
+- Network: [Retrofit](https://square.github.io/retrofit/) + [Chucker](https://github.com/ChuckerTeam/chucker)
 - Local storage: [Room](https://developer.android.com/training/data-storage/room)
 - Build system: [Gradle Version Catalog](https://docs.gradle.org/current/userguide/platforms.html) + [Convention plugins](https://docs.gradle.org/current/userguide/sharing_build_logic_between_subprojects.html)
