@@ -6,7 +6,7 @@ The implementation follows [app architecture](https://developer.android.com/topi
 <img src="https://github.com/rbrauwers/news-app/blob/main/screenshots/headlines.png" alt="News app" width="300"/>
 
 ## How it works
-Data is fetched from the [News API](https://newsapi.org/) and stored locally.
+Data is fetched from the [News API](https://newsapi.org/), stored locally and observed by UI.
 
 ## Setup
 Create an [API Key](https://newsapi.org/account) and place it at `local.properties`:
