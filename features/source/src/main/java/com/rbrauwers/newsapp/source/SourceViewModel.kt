@@ -38,8 +38,8 @@ internal class SourceViewModel @Inject constructor(
 
 internal sealed interface SourceUiState {
     data class Success(val sources: List<NewsSource>) : SourceUiState
-    object Error : SourceUiState
-    object Loading : SourceUiState
+    data object Error : SourceUiState
+    data object Loading : SourceUiState
 }
 
 private fun Result<List<NewsSource>>.toSourceUiState(): SourceUiState {
