@@ -37,8 +37,21 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":features:headline"))
     implementation(project(":features:source"))
+
+    kover(project(":core:data"))
+    kover(project(":core:network"))
+    kover(project(":core:model"))
+    kover(project(":core:ui"))
+    kover(project(":features:headline"))
+    kover(project(":features:source"))
 }
 
 kapt {
     correctErrorTypes = true
+}
+
+koverReport {
+    androidReports("debug") {
+
+    }
 }

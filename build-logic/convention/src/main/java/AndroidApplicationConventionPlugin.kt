@@ -19,6 +19,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.android")
                 apply("org.jetbrains.kotlin.kapt")
+                apply("org.jetbrains.kotlinx.kover")
             }
 
             extensions.configure<ApplicationExtension> {

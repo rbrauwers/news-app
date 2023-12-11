@@ -111,7 +111,7 @@ private fun LazyListScope.headlines(headlines: List<ArticleUi>) {
  * with columns and rows. See Headline2 for more details.
  */
 @Composable
-private fun Headline(
+internal fun Headline(
     article: ArticleUi,
     isFirst: Boolean = false,
     isLast: Boolean = false
