@@ -20,3 +20,8 @@ newsApiKey=YOUR_API_KEY
 - Network: [Retrofit](https://square.github.io/retrofit/) + [Chucker](https://github.com/ChuckerTeam/chucker)
 - Local storage: [Room](https://developer.android.com/training/data-storage/room)
 - Build system: [Gradle Version Catalog](https://docs.gradle.org/current/userguide/platforms.html) + [Convention plugins](https://docs.gradle.org/current/userguide/sharing_build_logic_between_subprojects.html)
+
+## Unit tests
+- Instrumental tests runs with [Robolectric](https://robolectric.org/)
+- Code coverage is generated with [Kover](https://github.com/Kotlin/kotlinx-kover)
+- To generate coverage report, run `./gradlew koverHtmlReportDebug`
