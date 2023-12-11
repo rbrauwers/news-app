@@ -43,6 +43,10 @@ internal fun Project.configureAndroidCompose(
             add("implementation", libs.findLibrary("lifecycle-compose").get())
             add("implementation", libs.findLibrary("lifecycle-viewmodel-compose").get())
             add("implementation", libs.findLibrary("navigation-compose").get())
+
+            add("testImplementation", libs.findLibrary("compose-ui-test").get())
+            add("testImplementation", libs.findLibrary("compose-ui-test-junit4").get())
+            add("testImplementation", libs.findLibrary("compose-ui-test-manifest").get())
         }
     }
 }

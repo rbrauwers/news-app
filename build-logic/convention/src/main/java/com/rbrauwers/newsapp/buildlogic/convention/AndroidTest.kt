@@ -19,8 +19,15 @@ internal fun Project.configureTests(
         val libs = extensions.getByType<VersionCatalogsExtension>().named("testLibs")
         dependencies {
             add("testImplementation", libs.findLibrary("junit").get())
+            add("testImplementation", libs.findLibrary("robolectric").get())
             add("androidTestImplementation", libs.findLibrary("androidx-junit").get())
             add("androidTestImplementation", libs.findLibrary("espresso-core").get())
+        }
+
+        testOptions {
+            unitTests {
+                isIncludeAndroidResources = true
+            }
         }
     }
 }
