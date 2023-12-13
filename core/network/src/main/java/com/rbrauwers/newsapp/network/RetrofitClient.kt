@@ -41,8 +41,15 @@ internal class RetrofitClient @Inject constructor(
 
                     chain.proceed(newRequest)
                 }
-                .addInterceptor(ChuckerInterceptor.Builder(context).build())
-                .build())
+                .addInterceptor(
+                    ChuckerInterceptor.Builder(context)
+                        .alwaysReadResponseBody(true)
+                        .maxContentLength(250_000L)
+                        .createShortcut(true)
+                        .build()
+                )
+                .build()
+            )
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(NewsApi::class.java)
