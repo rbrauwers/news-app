@@ -1,6 +1,8 @@
 package com.rbrauwers.newsapp.network.di
 
 import android.content.Context
+import com.rbrauwers.newsapp.network.GraphQLClient
+import com.rbrauwers.newsapp.network.GraphQLDataSource
 import com.rbrauwers.newsapp.network.NetworkDataSource
 import com.rbrauwers.newsapp.network.RetrofitClient
 import dagger.Module
@@ -27,5 +29,11 @@ object NetworkModule {
         @ApplicationContext context: Context,
         json: Json
     ): NetworkDataSource = RetrofitClient(context, json)
+
+    @Provides
+    @Singleton
+    fun providesGraphQLDataSource(
+        @ApplicationContext context: Context,
+    ): GraphQLDataSource = GraphQLClient(context)
 
 }

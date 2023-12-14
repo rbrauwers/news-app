@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -48,7 +47,7 @@ import com.rbrauwers.newsapp.source.sourcesScreen
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-private val screens = listOf(headlineScreen, sourceScreen, infoScreen)
+private val screens = listOf(headlineScreen, sourcesScreen, sourceScreen, infoScreen)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -69,9 +68,13 @@ private fun Content() {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
-    val currentScreen = screens.firstOrNull {
-        it.route == currentRoute
+
+    val currentScreen = currentRoute?.let { route ->
+        screens.firstOrNull {
+            it.route.contains(route)
+        }
     }
+
     val title = currentScreen?.title?.run {
         stringResource(id = this)
     } ?: ""
@@ -140,7 +143,11 @@ private fun Content() {
                 startDestination = headlineScreen.route
             ) {
                 headlinesScreen(modifier = Modifier.padding(innerPadding))
-                sourcesScreen(modifier = Modifier.padding(innerPadding))
+                sourcesScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    navController = navController
+                )
+                sourceScreen(modifier = Modifier.padding(innerPadding))
                 infoScreen(modifier = Modifier.padding(innerPadding))
             }
         }

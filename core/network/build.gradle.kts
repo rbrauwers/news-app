@@ -4,6 +4,7 @@ import java.util.*
 plugins {
     id("com.rbrauwers.newapp.library.plugin")
     id("com.rbrauwers.newapp.hilt.plugin")
+    alias(libs.plugins.apollo)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -24,6 +25,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.apollo.runtime)
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
     implementation(libs.retrofit)
@@ -39,4 +41,11 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.rbrauwers.newsapp.network")
+        nullableFieldStyle.set("none")
+    }
 }

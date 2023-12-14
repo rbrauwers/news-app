@@ -12,6 +12,9 @@ interface SourceDao {
     @Query("SELECT * FROM news_sources")
     fun getSources(): Flow<List<NewsSourceEntity>>
 
+    @Query("SELECT * FROM news_sources WHERE id = :id")
+    fun getSource(id: String): Flow<NewsSourceEntity?>
+
     @Upsert
     suspend fun upsertSources(sources: List<NewsSourceEntity>)
 

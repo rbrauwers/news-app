@@ -1,6 +1,7 @@
 [versions]
 activity-compose = "1.8.0"
 android-gradle-plugin = "8.1.2"
+apollo = "4.0.0-beta.4"
 appcompat = "1.6.1"
 chucker = "4.0.0"
 coil-compose = "2.2.2"
@@ -25,6 +26,7 @@ org-jetbrains-kotlin-jvm = "1.8.0"
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
 android-build-tools = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
+apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat"}
 chucker = { module = "com.github.chuckerteam.chucker:library", version.ref = "chucker" }
 chucker-no-op = { module = "com.github.chuckerteam.chucker:library-no-op", version.ref = "chucker" }
@@ -63,6 +65,7 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
