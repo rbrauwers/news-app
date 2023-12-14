@@ -1,11 +1,14 @@
 package com.rbrauwers.newsapp.data.di
 
+import com.rbrauwers.newsapp.data.repository.CountryRepository
+import com.rbrauwers.newsapp.data.repository.GraphQLCountryRepository
 import com.rbrauwers.newsapp.data.repository.HeadlineRepository
 import com.rbrauwers.newsapp.data.repository.SourceRepository
 import com.rbrauwers.newsapp.data.repository.SyncedHeadlineRepository
 import com.rbrauwers.newsapp.data.repository.SyncedSourceRepository
 import com.rbrauwers.newsapp.database.dao.HeadlineDao
 import com.rbrauwers.newsapp.database.dao.SourceDao
+import com.rbrauwers.newsapp.network.GraphQLDataSource
 import com.rbrauwers.newsapp.network.NetworkDataSource
 import dagger.Module
 import dagger.Provides
@@ -28,5 +31,10 @@ object RepositoryModule {
         networkDataSource: NetworkDataSource,
         dao: SourceDao
     ): SourceRepository = SyncedSourceRepository(networkDataSource = networkDataSource, dao = dao)
+
+    @Provides
+    fun provideCountryRepository(
+        graphQLDataSource: GraphQLDataSource
+    ): CountryRepository = GraphQLCountryRepository(dataSource = graphQLDataSource)
 
 }

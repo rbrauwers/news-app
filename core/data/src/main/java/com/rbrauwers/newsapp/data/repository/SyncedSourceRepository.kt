@@ -22,6 +22,10 @@ internal class SyncedSourceRepository @Inject constructor(
         return dao.getSources().map { it.map { source -> source.toExternalModel() } }
     }
 
+    override fun getSource(sourceId: String): Flow<NewsSource?> {
+        return dao.getSource(id = sourceId).map { it?.toExternalModel() }
+    }
+
     override suspend fun sync() {
         runCatching {
             val response = networkDataSource.getSources()
