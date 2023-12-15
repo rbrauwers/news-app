@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -41,11 +42,13 @@ import com.rbrauwers.newsapp.headline.headlineScreen
 import com.rbrauwers.newsapp.headline.headlinesScreen
 import com.rbrauwers.newsapp.info.infoScreen
 import com.rbrauwers.newsapp.info.navigateToInfo
+import com.rbrauwers.newsapp.network.postTest
 import com.rbrauwers.newsapp.source.SourcesNavigationBarItem
 import com.rbrauwers.newsapp.source.sourceScreen
 import com.rbrauwers.newsapp.source.sourcesScreen
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 private val screens = listOf(headlineScreen, sourcesScreen, sourceScreen, infoScreen)
 
@@ -57,6 +60,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Content()
+        }
+
+        lifecycleScope.launch {
+            postTest(this@MainActivity)
         }
     }
 }
