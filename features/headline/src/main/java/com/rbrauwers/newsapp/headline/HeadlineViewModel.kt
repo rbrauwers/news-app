@@ -8,11 +8,14 @@ import com.rbrauwers.newsapp.common.converters.ConvertStringToDateTimeInstance
 import com.rbrauwers.newsapp.data.repository.HeadlineRepository
 import com.rbrauwers.newsapp.model.Article
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,6 +25,7 @@ internal class HeadlineViewModel @Inject constructor(
 
     val headlineUiState: StateFlow<HeadlineUiState> =
         produceHeadlineUiState()
+            .flowOn(Dispatchers.IO)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
@@ -34,7 +38,6 @@ internal class HeadlineViewModel @Inject constructor(
             .asResult()
             .map { it.toHeadlineUiState() }
     }
-
 }
 
 internal sealed interface HeadlineUiState {
