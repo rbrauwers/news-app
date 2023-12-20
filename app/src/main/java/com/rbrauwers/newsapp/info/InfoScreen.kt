@@ -21,10 +21,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rbrauwers.newsapp.R
+import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.Screen
+import com.rbrauwers.newsapp.ui.TopBarState
 
 val infoScreen = Screen(
     route = "info",
@@ -50,8 +53,10 @@ private val libs = listOf(
 
 @Composable
 internal fun InfoRoute(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    appState: AppState
 ) {
+    appState.setTopBarState(TopBarState(stringResource(id = R.string.app_info)))
     InfoScreen(modifier = modifier.fillMaxSize())
 }
 

@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,8 +48,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.Screen
+import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
+import com.rbrauwers.newsapp.ui.rememberAppState
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 
 val headlineScreen = Screen(
@@ -61,9 +65,11 @@ val headlineScreen = Screen(
 @Composable
 internal fun HeadlinesRoute(
     modifier: Modifier = Modifier,
-    viewModel: HeadlineViewModel = hiltViewModel()
+    viewModel: HeadlineViewModel = hiltViewModel(),
+    appState: AppState
 ) {
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
+    appState.setTopBarState(TopBarState(title = stringResource(id = R.string.headlines)))
     HeadlinesScreen(uiState = uiState, modifier = modifier)
 }
 
@@ -150,7 +156,10 @@ internal fun Headline(
                 modifier = Modifier
                     .size(70.dp)
                     .clip(imageShape)
-                    .border(border = BorderStroke(width = 1.dp, color = Color.Black), shape = imageShape)
+                    .border(
+                        border = BorderStroke(width = 1.dp, color = Color.Black),
+                        shape = imageShape
+                    )
                     .constrainAs(image) {
                         end.linkTo(parent.end)
                     }

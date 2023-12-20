@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,8 +33,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.Country
 import com.rbrauwers.newsapp.model.NewsSource
+import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.Screen
+import com.rbrauwers.newsapp.ui.TopBarState
 
 internal const val sourceIdArg = "id"
 
@@ -48,9 +51,12 @@ val sourceScreen = Screen(
 internal fun SourceRoute(
     modifier: Modifier = Modifier,
     viewModel: SourceViewModel = hiltViewModel(),
+    appState: AppState
 ) {
     val sourceUiState: SourceUiState by viewModel.sourceUiState.collectAsStateWithLifecycle()
     val countryUiState: CountryUiState by viewModel.countryUiState.collectAsStateWithLifecycle()
+
+    appState.setTopBarState(TopBarState(title = stringResource(id = R.string.source_details)))
 
     SourceScreen(
         modifier = modifier,

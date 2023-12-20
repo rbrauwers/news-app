@@ -8,15 +8,16 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.NewsAppNavigationBarItem
 
 fun NavController.navigateToHeadlines(navOptions: NavOptions? = null) {
     this.navigate(headlineScreen.route, navOptions)
 }
 
-fun NavGraphBuilder.headlinesScreen(modifier: Modifier) {
+fun NavGraphBuilder.headlinesScreen(modifier: Modifier, appState: AppState) {
     composable(route = headlineScreen.route) {
-        HeadlinesRoute(modifier = modifier)
+        HeadlinesRoute(modifier = modifier, appState = appState)
     }
 }
 

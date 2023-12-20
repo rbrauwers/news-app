@@ -11,24 +11,28 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.rbrauwers.newsapp.model.NewsSource
+import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.NewsAppNavigationBarItem
 
 fun NavGraphBuilder.sourcesScreen(
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    appState: AppState
 ) {
     composable(route = sourcesScreen.route) {
         SourcesRoute(
             modifier = modifier,
             onNavigateToSource = {
                 navController.navigateToSource(source = it)
-            }
+            },
+            appState = appState
         )
     }
 }
 
 fun NavGraphBuilder.sourceScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    appState: AppState
 ) {
     composable(
         route = sourceScreen.route,
@@ -36,6 +40,7 @@ fun NavGraphBuilder.sourceScreen(
     ) { entry ->
         SourceRoute(
             modifier = modifier,
+            appState = appState
             /*
             There is no need to get this param explicitly, because it is automatically set to SourceViewModel.savedStateHandle
             sourceId = checkNotNull(

@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -27,7 +26,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -44,26 +46,34 @@ import com.rbrauwers.newsapp.info.navigateToInfo
 import com.rbrauwers.newsapp.source.SourcesNavigationBarItem
 import com.rbrauwers.newsapp.source.sourceScreen
 import com.rbrauwers.newsapp.source.sourcesScreen
+import com.rbrauwers.newsapp.ui.AppState
+import com.rbrauwers.newsapp.ui.rememberAppState
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.migration.CustomInjection.inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
 
 private val screens = listOf(headlineScreen, sourcesScreen, sourceScreen, infoScreen)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var appState: AppState
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Content()
+            Content(appState)
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Content() {
+private fun Content(appState: AppState) {
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -75,10 +85,6 @@ private fun Content() {
         }
     }
 
-    val title = currentScreen?.title?.run {
-        stringResource(id = this)
-    } ?: ""
-
     val bottomBarState = currentScreen?.isHome == true
 
     NewsAppTheme {
@@ -87,7 +93,7 @@ private fun Content() {
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
-                            text = title,
+                            text = appState.topBarState?.title ?: "",
                             style = MaterialTheme.typography.titleLarge
                         )
                     },
@@ -124,7 +130,7 @@ private fun Content() {
                     targetState = bottomBarState,
                     transitionSpec = {
                         slideInVertically(initialOffsetY = { it }) togetherWith
-                        slideOutVertically(targetOffsetY = { it })
+                                slideOutVertically(targetOffsetY = { it })
                     }, label = ""
                 ) { isVisible ->
                     if (isVisible) {
@@ -142,13 +148,26 @@ private fun Content() {
                 navController = navController,
                 startDestination = headlineScreen.route
             ) {
-                headlinesScreen(modifier = Modifier.padding(innerPadding))
+                headlinesScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    appState = appState
+                )
+
                 sourcesScreen(
                     modifier = Modifier.padding(innerPadding),
-                    navController = navController
+                    navController = navController,
+                    appState = appState
                 )
-                sourceScreen(modifier = Modifier.padding(innerPadding))
-                infoScreen(modifier = Modifier.padding(innerPadding))
+
+                sourceScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    appState = appState
+                )
+
+                infoScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    appState = appState
+                )
             }
         }
     }
@@ -180,6 +199,6 @@ private fun RowScope.SourcesBottomBar(navController: NavController) {
 @Composable
 fun DefaultPreview() {
     NewsAppTheme {
-        Content()
+        Content(AppState())
     }
 }
