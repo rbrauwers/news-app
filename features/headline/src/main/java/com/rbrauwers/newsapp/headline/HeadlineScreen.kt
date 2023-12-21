@@ -3,11 +3,13 @@ package com.rbrauwers.newsapp.headline
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,20 +24,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material3.Card
-import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -52,8 +58,8 @@ import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
-import com.rbrauwers.newsapp.ui.rememberAppState
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
+import kotlinx.coroutines.async
 
 val headlineScreen = Screen(
     route = "headlines",
@@ -70,36 +76,66 @@ internal fun HeadlinesRoute(
 ) {
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
     appState.setTopBarState(TopBarState(title = stringResource(id = R.string.headlines)))
-    HeadlinesScreen(uiState = uiState, modifier = modifier)
+
+    HeadlinesScreen(
+        uiState = uiState,
+        modifier = modifier,
+        onRefresh = viewModel::sync
+    )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HeadlinesScreen(
     uiState: HeadlineUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onRefresh: suspend () -> Unit
 ) {
     val listState = rememberLazyListState()
     val arrangement = remember {
         if (uiState is HeadlineUiState.Success) Arrangement.Center else Arrangement.Top
     }
 
-    LazyColumn(
-        state = listState,
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = arrangement
-    ) {
-        when (uiState) {
-            is HeadlineUiState.Loading -> {
-                newsAppDefaultProgressIndicatorItem(placeOnCenter = true)
-            }
-            is HeadlineUiState.Error -> {
-                // TODO
-            }
-            is HeadlineUiState.Success -> {
-                headlines(headlines = uiState.headlines)
+    val pullToRefreshState = rememberPullToRefreshState(positionalThreshold = 120.dp)
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(true) {
+            async {
+                onRefresh()
+            }.await()
+
+            pullToRefreshState.endRefresh()
+        }
+    }
+
+    val scaleFraction = if (pullToRefreshState.isRefreshing) 1f else
+        LinearOutSlowInEasing.transform(pullToRefreshState.progress).coerceIn(0f, 1f)
+
+    Box(Modifier.nestedScroll(pullToRefreshState.nestedScrollConnection)) {
+        LazyColumn(
+            state = listState,
+            modifier = modifier,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = arrangement
+        ) {
+            when (uiState) {
+                is HeadlineUiState.Loading -> {
+                    newsAppDefaultProgressIndicatorItem(placeOnCenter = true)
+                }
+                is HeadlineUiState.Error -> {
+                    // TODO
+                }
+                is HeadlineUiState.Success -> {
+                    headlines(headlines = uiState.headlines)
+                }
             }
         }
+
+        PullToRefreshContainer(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .graphicsLayer(scaleX = scaleFraction, scaleY = scaleFraction),
+            state = pullToRefreshState,
+        )
     }
 }
 

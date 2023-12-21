@@ -9,14 +9,16 @@ import com.rbrauwers.newsapp.data.repository.HeadlineRepository
 import com.rbrauwers.newsapp.model.Article
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 
 @HiltViewModel
 internal class HeadlineViewModel @Inject constructor(
@@ -38,12 +40,20 @@ internal class HeadlineViewModel @Inject constructor(
             .asResult()
             .map { it.toHeadlineUiState() }
     }
+
+    suspend fun sync() {
+        val millis = measureTimeMillis {
+            headlineRepository.sync()
+        }
+        delay((2000 - millis).coerceAtLeast(0))
+    }
+
 }
 
 internal sealed interface HeadlineUiState {
     data class Success(val headlines: List<ArticleUi>) : HeadlineUiState
-    object Error : HeadlineUiState
-    object Loading : HeadlineUiState
+    data object Error : HeadlineUiState
+    data object Loading : HeadlineUiState
 }
 
 private fun Result<List<Article>>.toHeadlineUiState(): HeadlineUiState {

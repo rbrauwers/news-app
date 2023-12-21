@@ -36,7 +36,8 @@ internal fun Project.configureAndroidCompose(
             add("androidTestImplementation", platform(bom))
 
             add("implementation", libs.findLibrary("activity-compose").get())
-            add("implementation", libs.findLibrary("compose-material").get())
+            add("implementation", libs.findLibrary("compose-material-3").get())
+
             add("implementation", libs.findLibrary("compose-tooling-preview").get())
             add("implementation", libs.findLibrary("compose-icons-extended").get())
             add("debugImplementation", libs.findLibrary("compose-tooling").get())
