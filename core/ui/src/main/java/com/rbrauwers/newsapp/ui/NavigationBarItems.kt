@@ -20,7 +20,7 @@ fun RowScope.NewsAppNavigationBarItem(
     NavigationBarItem(
         icon = { Icon(screen.icon, contentDescription = null) },
         label = { Text(stringResource(screen.title)) },
-        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+        selected = currentDestination?.route == screen.baseRoute,
         onClick = {
             navController.navigate(screen.baseRoute) {
                 // Pop up to the start destination of the graph to
