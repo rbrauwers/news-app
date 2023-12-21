@@ -28,6 +28,7 @@ import com.rbrauwers.newsapp.R
 import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.BackNavigationIcon
 import com.rbrauwers.newsapp.ui.Screen
+import com.rbrauwers.newsapp.ui.SetTopBarState
 import com.rbrauwers.newsapp.ui.TopBarState
 
 val infoScreen = Screen(
@@ -56,16 +57,17 @@ private val libs = listOf(
 @Composable
 internal fun InfoRoute(
     modifier: Modifier = Modifier,
-    appState: AppState,
+    onComposeTopBarState: (TopBarState) -> Unit,
     onBackClick: () -> Unit
 ) {
-    appState.setTopBarState(
-        TopBarState(
+    SetTopBarState(
+        topBarState = TopBarState(
             title = stringResource(id = R.string.app_info),
             navigationIcon = {
                 BackNavigationIcon(onBackClick = onBackClick)
             }
-        )
+        ),
+        onComposeTopBarState = onComposeTopBarState
     )
 
     InfoScreen(modifier = modifier.fillMaxSize())
@@ -78,7 +80,10 @@ private fun InfoScreen(modifier: Modifier = Modifier) {
     Surface(modifier = modifier) {
         LazyColumn(modifier = Modifier.padding(16.dp)) {
             item {
-                Text(text = "Libraries and frameworks", style = MaterialTheme.typography.headlineSmall)
+                Text(
+                    text = "Libraries and frameworks",
+                    style = MaterialTheme.typography.headlineSmall
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 Divider(modifier = Modifier.height(2.dp))
                 Spacer(modifier = Modifier.height(4.dp))

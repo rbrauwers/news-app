@@ -57,6 +57,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.Screen
+import com.rbrauwers.newsapp.ui.SetTopBarState
 import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
@@ -74,10 +75,14 @@ val headlinesScreen = Screen(
 internal fun HeadlinesRoute(
     modifier: Modifier = Modifier,
     viewModel: HeadlineViewModel = hiltViewModel(),
-    appState: AppState
+    onComposeTopBarState: (TopBarState) -> Unit
 ) {
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
-    appState.setTopBarState(TopBarState(title = stringResource(id = R.string.headlines)))
+
+    SetTopBarState(
+        topBarState = TopBarState(title = stringResource(id = R.string.headlines)),
+        onComposeTopBarState = onComposeTopBarState
+    )
 
     HeadlinesScreen(
         uiState = uiState,

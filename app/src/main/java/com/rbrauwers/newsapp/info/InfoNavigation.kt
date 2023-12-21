@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.rbrauwers.newsapp.ui.AppState
+import com.rbrauwers.newsapp.ui.TopBarState
 
 fun NavController.navigateToInfo(navOptions: NavOptions? = null) {
     this.navigate(infoScreen.route, navOptions)
@@ -13,7 +14,7 @@ fun NavController.navigateToInfo(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.infoScreen(
     modifier: Modifier = Modifier,
-    appState: AppState,
+    onComposeTopBarState: (TopBarState) -> Unit,
     navController: NavController
 ) {
     composable(
@@ -21,7 +22,7 @@ fun NavGraphBuilder.infoScreen(
     ) {
         InfoRoute(
             modifier = modifier,
-            appState = appState,
+            onComposeTopBarState = onComposeTopBarState,
             onBackClick = {
                 navController.popBackStack()
             }

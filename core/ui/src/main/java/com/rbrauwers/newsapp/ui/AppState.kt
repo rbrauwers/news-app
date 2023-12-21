@@ -30,10 +30,12 @@ data class TopBarState(
     val actions: (@Composable RowScope.() -> Unit)? = null
 )
 
-
+/**
+ * Screens should use this function to setup a dynamic/actioned top bar.
+ */
 @Composable
-fun SetTopBarState(topBarState: TopBarState?, onComposeAppBarState: (TopBarState?) -> Unit) {
+fun SetTopBarState(topBarState: TopBarState, onComposeTopBarState: (TopBarState) -> Unit) {
     LaunchedEffect(Unit) {
-        onComposeAppBarState(topBarState)
+        onComposeTopBarState(topBarState)
     }
 }

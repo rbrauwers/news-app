@@ -24,6 +24,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,6 +46,8 @@ import com.rbrauwers.newsapp.source.sourceScreen
 import com.rbrauwers.newsapp.source.sourcesNavHost
 import com.rbrauwers.newsapp.source.sourcesScreen
 import com.rbrauwers.newsapp.ui.AppState
+import com.rbrauwers.newsapp.ui.TopBarState
+import com.rbrauwers.newsapp.ui.rememberAppState
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -54,25 +57,23 @@ private val screens = listOf(headlinesScreen, sourcesScreen, sourceScreen, infoS
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var appState: AppState
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Content(appState)
+            Content()
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Content(appState: AppState) {
+private fun Content() {
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
+    val appState = rememberAppState()
 
     val currentScreen = currentRoute?.let { route ->
         screens.firstOrNull {
@@ -130,16 +131,20 @@ private fun Content(appState: AppState) {
                 }
             }
         ) { innerPadding ->
+            val onComposeTopBarState: (TopBarState) -> Unit = {
+                appState.setTopBarState(it)
+            }
+
             NavHost(
                 navController = navController,
                 startDestination = headlinesBaseRoute,
                 modifier = Modifier.padding(innerPadding)
             ) {
-                headlinesNavHost(appState = appState)
-                sourcesNavHost(appState = appState)
+                headlinesNavHost(onComposeTopBarState = onComposeTopBarState)
+                sourcesNavHost(onComposeTopBarState = onComposeTopBarState)
 
                 infoScreen(
-                    appState = appState,
+                    onComposeTopBarState = onComposeTopBarState,
                     navController = navController
                 )
             }
@@ -173,6 +178,6 @@ private fun RowScope.SourcesBottomBar(navController: NavController) {
 @Composable
 fun DefaultPreview() {
     NewsAppTheme {
-        Content(AppState())
+        Content()
     }
 }
