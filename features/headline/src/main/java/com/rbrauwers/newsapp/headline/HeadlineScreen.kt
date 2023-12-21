@@ -10,21 +10,25 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconToggleButton
@@ -49,13 +53,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.SetTopBarState
 import com.rbrauwers.newsapp.ui.TopBarState
@@ -182,83 +183,84 @@ internal fun Headline(
                 article.openUrl(context = context)
             }
     ) {
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
+        Row(
+            modifier = Modifier.fillMaxSize().padding(24.dp)
         ) {
-            val (author, title, date, image, web) = createRefs()
-
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(article.urlToImage)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(70.dp)
-                    .clip(imageShape)
-                    .border(
-                        border = BorderStroke(width = 1.dp, color = Color.Black),
-                        shape = imageShape
-                    )
-                    .constrainAs(image) {
-                        end.linkTo(parent.end)
-                    }
-            )
-
-            Text(
-                text = article.author.orEmpty(),
-                maxLines = 1,
-                style = MaterialTheme.typography.titleSmall,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.constrainAs(author) {
-                    width = Dimension.fillToConstraints
-                    start.linkTo(parent.start)
-                    end.linkTo(image.start, margin = 16.dp)
-                }
-            )
-
-            Text(
-                text = article.title.orEmpty(),
-                maxLines = 4,
-                style = MaterialTheme.typography.bodyLarge,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .constrainAs(title) {
-                        width = Dimension.fillToConstraints
-                        top.linkTo(author.bottom, margin = 2.dp)
-                        start.linkTo(author.start)
-                        end.linkTo(author.end)
-                    }
-            )
-
-            Text(
-                text = article.publishedAt.orEmpty(),
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-                    .constrainAs(date) {
-                        bottom.linkTo(web.bottom, margin = 4.dp)
-                        start.linkTo(author.start)
-                    }
-                    .background(
-                        MaterialTheme.colorScheme.onPrimary,
-                        shape = MaterialTheme.shapes.small
-                    )
-                    .padding(8.dp)
-            )
-
-            FilledIconToggleButton(
-                checked = isFirst,
-                onCheckedChange = { isChecked -> },
-                modifier = Modifier
-                    .constrainAs(web) {
-                        end.linkTo(image.end)
-                        bottom.linkTo(parent.bottom, margin = 0.dp)
-                    }
+            Column(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "")
+                Text(
+                    text = article.author.orEmpty(),
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleSmall,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                )
+
+                Text(
+                    text = article.title.orEmpty(),
+                    maxLines = 3,
+                    style = MaterialTheme.typography.bodyLarge,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+
+                article.publishedAt?.let { date ->
+                    Text(
+                        text = date,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .background(
+                                MaterialTheme.colorScheme.onPrimary,
+                                shape = MaterialTheme.shapes.small
+                            )
+                            .padding(8.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                when (val url = article.urlToImage) {
+                    null -> {
+                        Box(
+                            modifier = Modifier
+                                .size(70.dp)
+                                .clip(CircleShape)
+                        )
+                    }
+
+                    else -> {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(url)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(70.dp)
+                                .clip(imageShape)
+                                .border(
+                                    border = BorderStroke(width = 1.dp, color = Color.Black),
+                                    shape = imageShape
+                                )
+                        )
+                    }
+                }
+
+                FilledIconToggleButton(
+                    checked = isFirst,
+                    onCheckedChange = { isChecked -> },
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "")
+                }
             }
         }
     }
