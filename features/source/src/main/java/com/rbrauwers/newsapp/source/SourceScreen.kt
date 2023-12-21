@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.Country
 import com.rbrauwers.newsapp.model.NewsSource
 import com.rbrauwers.newsapp.ui.AppState
+import com.rbrauwers.newsapp.ui.BackNavigationIcon
 import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
@@ -41,7 +42,8 @@ import com.rbrauwers.newsapp.ui.TopBarState
 internal const val sourceIdArg = "id"
 
 val sourceScreen = Screen(
-    route = "source/{$sourceIdArg}",
+    baseRoute = sourcesBaseRoute,
+    route = "${sourcesBaseRoute}/{$sourceIdArg}",
     title = R.string.source_details,
     icon = Icons.Filled.Person,
     isHome = false
@@ -51,12 +53,20 @@ val sourceScreen = Screen(
 internal fun SourceRoute(
     modifier: Modifier = Modifier,
     viewModel: SourceViewModel = hiltViewModel(),
-    appState: AppState
+    appState: AppState,
+    onBackClick: () -> Unit
 ) {
     val sourceUiState: SourceUiState by viewModel.sourceUiState.collectAsStateWithLifecycle()
     val countryUiState: CountryUiState by viewModel.countryUiState.collectAsStateWithLifecycle()
 
-    appState.setTopBarState(TopBarState(title = stringResource(id = R.string.source_details)))
+    appState.setTopBarState(
+        TopBarState(
+            title = stringResource(id = R.string.source_details),
+            navigationIcon = {
+                BackNavigationIcon(onBackClick = onBackClick)
+            }
+        )
+    )
 
     SourceScreen(
         modifier = modifier,
@@ -64,7 +74,6 @@ internal fun SourceRoute(
         countryUiState = countryUiState
     )
 }
-
 
 @Composable
 private fun SourceScreen(

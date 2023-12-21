@@ -26,10 +26,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rbrauwers.newsapp.R
 import com.rbrauwers.newsapp.ui.AppState
+import com.rbrauwers.newsapp.ui.BackNavigationIcon
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
 
 val infoScreen = Screen(
+    baseRoute = "info",
     route = "info",
     title = R.string.app_info,
     icon = Icons.Outlined.Info,
@@ -54,9 +56,18 @@ private val libs = listOf(
 @Composable
 internal fun InfoRoute(
     modifier: Modifier = Modifier,
-    appState: AppState
+    appState: AppState,
+    onBackClick: () -> Unit
 ) {
-    appState.setTopBarState(TopBarState(stringResource(id = R.string.app_info)))
+    appState.setTopBarState(
+        TopBarState(
+            title = stringResource(id = R.string.app_info),
+            navigationIcon = {
+                BackNavigationIcon(onBackClick = onBackClick)
+            }
+        )
+    )
+
     InfoScreen(modifier = modifier.fillMaxSize())
 }
 

@@ -33,7 +33,7 @@ internal class HeadlineViewModel @Inject constructor(
             .flowOn(Dispatchers.IO)
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
+                started = SharingStarted.Lazily,
                 initialValue = HeadlineUiState.Loading
             )
 

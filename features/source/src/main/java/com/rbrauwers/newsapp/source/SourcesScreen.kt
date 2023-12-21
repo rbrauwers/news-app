@@ -38,7 +38,8 @@ import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
 
 val sourcesScreen = Screen(
-    route = "sources",
+    baseRoute = sourcesBaseRoute,
+    route = "$sourcesBaseRoute/list",
     title = R.string.sources,
     icon = Icons.Filled.Person,
     isHome = true

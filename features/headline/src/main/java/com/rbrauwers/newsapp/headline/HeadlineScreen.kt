@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Card
@@ -61,10 +62,11 @@ import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import kotlinx.coroutines.async
 
-val headlineScreen = Screen(
-    route = "headlines",
+val headlinesScreen = Screen(
+    baseRoute = headlinesBaseRoute,
+    route = "$headlinesBaseRoute/list",
     title = R.string.headlines,
-    icon = Icons.Filled.List,
+    icon = Icons.AutoMirrored.Filled.List,
     isHome = true
 )
 

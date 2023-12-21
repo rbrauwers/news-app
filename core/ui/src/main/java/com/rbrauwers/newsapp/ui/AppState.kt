@@ -26,6 +26,7 @@ class AppState {
 data class TopBarState(
     //val title: (@Composable () -> Unit)? = null,
     val title: String? = null,
+    val navigationIcon: (@Composable () -> Unit)? = null,
     val actions: (@Composable RowScope.() -> Unit)? = null
 )
 

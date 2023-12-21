@@ -6,17 +6,37 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.NewsAppNavigationBarItem
 
-fun NavController.navigateToHeadlines(navOptions: NavOptions? = null) {
-    this.navigate(headlineScreen.route, navOptions)
+const val headlinesBaseRoute = "headlines"
+
+fun NavGraphBuilder.headlinesNavHost(appState: AppState) {
+    composable(route = headlinesBaseRoute) {
+        NavHost(navController = rememberNavController(), startDestination = headlinesBaseRoute) {
+            headlinesNavGraph(appState = appState)
+        }
+    }
 }
 
-fun NavGraphBuilder.headlinesScreen(modifier: Modifier, appState: AppState) {
-    composable(route = headlineScreen.route) {
+private fun NavGraphBuilder.headlinesNavGraph(appState: AppState) {
+    navigation(startDestination = headlinesScreen.route, route = headlinesBaseRoute) {
+        headlinesScreen(appState = appState)
+    }
+}
+
+fun NavController.navigateToHeadlines(navOptions: NavOptions? = null) {
+    this.navigate(headlinesScreen.route, navOptions)
+}
+
+private fun NavGraphBuilder.headlinesScreen(modifier: Modifier = Modifier, appState: AppState) {
+    composable(route = headlinesScreen.route) {
         HeadlinesRoute(modifier = modifier, appState = appState)
     }
 }
@@ -27,7 +47,7 @@ fun RowScope.HeadlinesNavigationBarItem(
     currentDestination: NavDestination?
 ) {
     NewsAppNavigationBarItem(
-        screen = headlineScreen,
+        screen = headlinesScreen,
         navController = navController,
         currentDestination = currentDestination
     )

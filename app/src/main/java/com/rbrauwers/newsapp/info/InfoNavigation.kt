@@ -11,10 +11,20 @@ fun NavController.navigateToInfo(navOptions: NavOptions? = null) {
     this.navigate(infoScreen.route, navOptions)
 }
 
-fun NavGraphBuilder.infoScreen(modifier: Modifier, appState: AppState) {
+fun NavGraphBuilder.infoScreen(
+    modifier: Modifier = Modifier,
+    appState: AppState,
+    navController: NavController
+) {
     composable(
         route = infoScreen.route,
     ) {
-        InfoRoute(modifier = modifier, appState = appState)
+        InfoRoute(
+            modifier = modifier,
+            appState = appState,
+            onBackClick = {
+                navController.popBackStack()
+            }
+        )
     }
 }

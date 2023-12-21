@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,35 +26,30 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.rbrauwers.newsapp.headline.HeadlinesNavigationBarItem
-import com.rbrauwers.newsapp.headline.headlineScreen
+import com.rbrauwers.newsapp.headline.headlinesBaseRoute
+import com.rbrauwers.newsapp.headline.headlinesNavHost
 import com.rbrauwers.newsapp.headline.headlinesScreen
 import com.rbrauwers.newsapp.info.infoScreen
 import com.rbrauwers.newsapp.info.navigateToInfo
 import com.rbrauwers.newsapp.source.SourcesNavigationBarItem
 import com.rbrauwers.newsapp.source.sourceScreen
+import com.rbrauwers.newsapp.source.sourcesNavHost
 import com.rbrauwers.newsapp.source.sourcesScreen
 import com.rbrauwers.newsapp.ui.AppState
-import com.rbrauwers.newsapp.ui.rememberAppState
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.migration.CustomInjection.inject
-import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
-private val screens = listOf(headlineScreen, sourcesScreen, sourceScreen, infoScreen)
+private val screens = listOf(headlinesScreen, sourcesScreen, sourceScreen, infoScreen)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -113,16 +108,7 @@ private fun Content(appState: AppState) {
                             }
                         }
                     },
-                    navigationIcon = {
-                        if (currentScreen?.isHome == false) {
-                            IconButton(onClick = { navController.popBackStack() }) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    }
+                    navigationIcon = appState.topBarState?.navigationIcon ?: { },
                 )
             },
             bottomBar = {
@@ -146,27 +132,15 @@ private fun Content(appState: AppState) {
         ) { innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = headlineScreen.route
+                startDestination = headlinesBaseRoute,
+                modifier = Modifier.padding(innerPadding)
             ) {
-                headlinesScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    appState = appState
-                )
-
-                sourcesScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    navController = navController,
-                    appState = appState
-                )
-
-                sourceScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    appState = appState
-                )
+                headlinesNavHost(appState = appState)
+                sourcesNavHost(appState = appState)
 
                 infoScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    appState = appState
+                    appState = appState,
+                    navController = navController
                 )
             }
         }
