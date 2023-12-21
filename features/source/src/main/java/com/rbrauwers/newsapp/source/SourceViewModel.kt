@@ -1,5 +1,6 @@
 package com.rbrauwers.newsapp.source
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -70,6 +71,7 @@ internal class SourceViewModel @Inject constructor(
 
 }
 
+@Immutable
 internal sealed interface CountryUiState {
     data class Success(val country: Country?) : CountryUiState
     data object Error : CountryUiState
@@ -84,6 +86,7 @@ private fun Result<Country?>.toCountryUiState(): CountryUiState {
     }
 }
 
+@Immutable
 internal data class SourceUiState(val source: NewsSource?)
 
 private fun NewsSource?.toSourceUiState() = SourceUiState(source = this)

@@ -6,6 +6,7 @@ appcompat = "1.6.1"
 chucker = "4.0.0"
 coil-compose = "2.5.0"
 compose-bom = "2023.10.01"
+compose-bom-chrisbanes = "2023.12.00-alpha04"
 compose-compiler = "1.5.3"
 compose-material-3 = "1.2.0-beta01"
 constraintlayout-compose = "1.0.1"
@@ -32,6 +33,7 @@ chucker = { module = "com.github.chuckerteam.chucker:library", version.ref = "ch
 chucker-no-op = { module = "com.github.chuckerteam.chucker:library-no-op", version.ref = "chucker" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
+compose-bom-chrisbanes = { module = "dev.chrisbanes.compose:compose-bom", version.ref = "compose-bom-chrisbanes" }
 compose-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 # Using explicit version to enable use of beta/alpha material-3 APIs, such as pull indicator
 compose-material-3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material-3" }

@@ -1,5 +1,6 @@
 package com.rbrauwers.newsapp.source
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rbrauwers.newsapp.common.Result
@@ -39,6 +40,7 @@ internal class SourcesViewModel @Inject constructor(
 
 }
 
+@Immutable
 internal sealed interface SourcesUiState {
     data class Success(val sources: List<NewsSource>) : SourcesUiState
     data object Error : SourcesUiState

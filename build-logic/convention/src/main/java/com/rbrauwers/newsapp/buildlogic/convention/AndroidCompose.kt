@@ -31,7 +31,8 @@ internal fun Project.configureAndroidCompose(
          * Only compose dependencies that is used by all compose modules should be placed here.
          */
         dependencies {
-            val bom = libs.findLibrary("compose-bom").get()
+            //val bom = libs.findLibrary("compose-bom").get()
+            val bom = libs.findLibrary("compose-bom-chrisbanes").get()
             add("implementation", platform(bom))
             add("androidTestImplementation", platform(bom))
 

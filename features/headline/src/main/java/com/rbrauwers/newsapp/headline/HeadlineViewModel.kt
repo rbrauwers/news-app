@@ -1,5 +1,6 @@
 package com.rbrauwers.newsapp.headline
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rbrauwers.newsapp.common.Result
@@ -19,6 +20,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import kotlin.system.measureTimeMillis
+
+private var globalCounter = 0
 
 @HiltViewModel
 internal class HeadlineViewModel @Inject constructor(
@@ -42,6 +45,8 @@ internal class HeadlineViewModel @Inject constructor(
     }
 
     suspend fun sync() {
+        globalCounter++
+
         val millis = measureTimeMillis {
             headlineRepository.sync()
         }
@@ -50,6 +55,7 @@ internal class HeadlineViewModel @Inject constructor(
 
 }
 
+@Immutable
 internal sealed interface HeadlineUiState {
     data class Success(val headlines: List<ArticleUi>) : HeadlineUiState
     data object Error : HeadlineUiState
@@ -72,7 +78,7 @@ private fun Article.toArticleUi(
 ) = ArticleUi(
     id = id,
     author = if (author.isNullOrBlank()) "Author: N/A" else author,
-    title = title,
+    title = "$globalCounter - $title",
     urlToImage = urlToImage,
     url = url,
     publishedAt = dateConverter(publishedAt)
