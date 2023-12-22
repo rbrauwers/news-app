@@ -15,8 +15,37 @@ data class ArticleEntity(
     val url: String?,
     @ColumnInfo(name = "url_to_image") val urlToImage: String?,
     @ColumnInfo(name = "published_at") val publishedAt: String?,
-    val content: String?
+    val content: String?,
+    @ColumnInfo(defaultValue = "0") val liked: Boolean
 )
+
+/**
+ * Wrapper to upsert only some columns of ArticleEntity.
+ * More specifically, liked column is not upserted, because it is stored only
+ * on local database and should not be overwrite by data fetched from network.
+ * https://developer.android.com/reference/androidx/room/Update
+ */
+internal data class ArticleEntityUpsertWrapper(
+    val id: Int,
+    val author: String?,
+    val title: String?,
+    val description: String?,
+    val url: String?,
+    @ColumnInfo(name = "url_to_image") val urlToImage: String?,
+    @ColumnInfo(name = "published_at") val publishedAt: String?,
+    val content: String?
+) {
+    constructor(entity: ArticleEntity) : this(
+        id = entity.id,
+        author = entity.author,
+        title = entity.title,
+        description = entity.description,
+        url = entity.url,
+        urlToImage = entity.urlToImage,
+        publishedAt = entity.publishedAt,
+        content = entity.content
+    )
+}
 
 fun ArticleEntity.toExternalModel() = Article(
     id = id,
@@ -26,5 +55,6 @@ fun ArticleEntity.toExternalModel() = Article(
     url = url,
     urlToImage = urlToImage,
     publishedAt = publishedAt,
-    content = content
+    content = content,
+    liked = liked
 )

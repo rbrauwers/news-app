@@ -12,12 +12,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.system.measureTimeMillis
 
@@ -53,6 +53,12 @@ internal class HeadlineViewModel @Inject constructor(
         delay((2000 - millis).coerceAtLeast(0))
     }
 
+    fun updateLiked(articleUi: ArticleUi, liked: Boolean) {
+        viewModelScope.launch {
+            headlineRepository.updateLiked(id = articleUi.id, liked = liked)
+        }
+    }
+
 }
 
 @Immutable
@@ -81,7 +87,8 @@ private fun Article.toArticleUi(
     title = "$globalCounter - $title",
     urlToImage = urlToImage,
     url = url,
-    publishedAt = dateConverter(publishedAt)
+    publishedAt = dateConverter(publishedAt),
+    liked = liked
 )
 
 internal data class ArticleUi(
@@ -90,5 +97,6 @@ internal data class ArticleUi(
     val title: String?,
     val urlToImage: String?,
     val url: String?,
-    val publishedAt: String?
+    val publishedAt: String?,
+    val liked: Boolean
 )
