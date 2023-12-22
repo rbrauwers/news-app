@@ -7,4 +7,5 @@ plugins {
     alias(libs.plugins.kover) apply true
     alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.room) apply false
 }

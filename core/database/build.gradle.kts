@@ -2,6 +2,7 @@ plugins {
     id("com.rbrauwers.newapp.library.plugin")
     id("com.rbrauwers.newapp.hilt.plugin")
     alias(libs.plugins.apollo)
+    alias(libs.plugins.room)
 }
 
 android {
@@ -15,4 +16,8 @@ dependencies {
     kapt(libs.room.compiler)
 
     implementation(project(":core:model"))
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }

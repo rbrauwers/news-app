@@ -1,5 +1,6 @@
 package com.rbrauwers.newsapp.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.rbrauwers.newsapp.database.dao.HeadlineDao
@@ -12,8 +13,10 @@ import com.rbrauwers.newsapp.database.model.NewsSourceEntity
         ArticleEntity::class,
         NewsSourceEntity::class
     ],
-    version = 1,
-    exportSchema = false
+    version = 2,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2)
+    ]
 )
 abstract class NewsDatabase : RoomDatabase() {
 

@@ -2,6 +2,7 @@ package com.rbrauwers.newsapp
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -57,6 +58,33 @@ class ExampleUnitTest {
         }
 
         println("Done")
+    }
+
+    fun e() {
+        val user = User(name = "John")
+
+        // Results in Person
+        val let = user.let { u -> Person(name = u.name) }
+        val run = user.run { Person(name = this.name) }
+
+        // Results in User
+        val apply = user.apply { Person(name = this.name) }
+        val also = user.also { Person(name = it.name) }
+    }
+
+    data class User(val name: String)
+    data class Person(val name: String)
+
+    open class Base
+
+    class Detail : Base() {
+
+        fun x() {
+            runBlocking {
+                async {  }
+            }
+        }
+
     }
 
 }

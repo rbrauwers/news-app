@@ -88,7 +88,8 @@ internal fun HeadlinesRoute(
     HeadlinesScreen(
         uiState = uiState,
         modifier = modifier,
-        onRefresh = viewModel::sync
+        onRefresh = viewModel::sync,
+        onLikedChanged = viewModel::updateLiked
     )
 }
 
@@ -97,7 +98,8 @@ internal fun HeadlinesRoute(
 private fun HeadlinesScreen(
     uiState: HeadlineUiState,
     modifier: Modifier = Modifier,
-    onRefresh: suspend () -> Unit
+    onRefresh: suspend () -> Unit,
+    onLikedChanged: (ArticleUi, Boolean) -> Unit
 ) {
     val listState = rememberLazyListState()
     val arrangement = remember {
@@ -133,7 +135,10 @@ private fun HeadlinesScreen(
                     // TODO
                 }
                 is HeadlineUiState.Success -> {
-                    headlines(headlines = uiState.headlines)
+                    headlines(
+                        headlines = uiState.headlines,
+                        onLikedChanged = onLikedChanged
+                    )
                 }
             }
         }
@@ -147,12 +152,20 @@ private fun HeadlinesScreen(
     }
 }
 
-private fun LazyListScope.headlines(headlines: List<ArticleUi>) {
+private fun LazyListScope.headlines(
+    headlines: List<ArticleUi>,
+    onLikedChanged: (ArticleUi, Boolean) -> Unit
+) {
     itemsIndexed(
         items = headlines,
         key = { _, article -> article.id }
     ) { index, article ->
-        Headline(article = article, isFirst = index == 0, isLast = index == headlines.lastIndex)
+        Headline(
+            article = article,
+            isFirst = index == 0,
+            isLast = index == headlines.lastIndex,
+            onLikedChanged = onLikedChanged
+        )
     }
 }
 
@@ -164,7 +177,8 @@ private fun LazyListScope.headlines(headlines: List<ArticleUi>) {
 internal fun Headline(
     article: ArticleUi,
     isFirst: Boolean = false,
-    isLast: Boolean = false
+    isLast: Boolean = false,
+    onLikedChanged: (ArticleUi, Boolean) -> Unit
 ) {
     val imageShape = RoundedCornerShape(8.dp)
     val context = LocalContext.current
@@ -255,8 +269,10 @@ internal fun Headline(
                 }
 
                 FilledIconToggleButton(
-                    checked = isFirst,
-                    onCheckedChange = { isChecked -> },
+                    checked = article.liked,
+                    onCheckedChange = { isChecked ->
+                        onLikedChanged(article, isChecked)
+                    },
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "")
@@ -276,8 +292,10 @@ private fun HeadlinePreview() {
             title = "Inflation is super high is super high is super high is super high is super high",
             urlToImage = "https://images.pexels.com/photos/34299/herbs-flavoring-seasoning-cooking.jpg?cs=srgb&dl=pexels-pixabay-34299.jpg&fm=jpg&w=640&h=427&_gl=1*1urd5oa*_ga*MzQ2NzQzNzA3LjE2NzU3NTcwNzU.*_ga_8JE65Q40S6*MTY3NTc1NzA3NS4xLjEuMTY3NTc1NzEwNC4wLjAuMA..",
             url = "https://google.com",
-            publishedAt = "2023-01-02 10:21:00"
-        )
+            publishedAt = "2023-01-02 10:21:00",
+            liked = false
+        ),
+        onLikedChanged = { _, _ -> }
     )
 }
 
@@ -325,7 +343,8 @@ private fun HeadlinePreview2() {
             title = "Inflation is super high is super high is super high is super high is super high",
             urlToImage = "https://images.pexels.com/photos/34299/herbs-flavoring-seasoning-cooking.jpg?cs=srgb&dl=pexels-pixabay-34299.jpg&fm=jpg&w=640&h=427&_gl=1*1urd5oa*_ga*MzQ2NzQzNzA3LjE2NzU3NTcwNzU.*_ga_8JE65Q40S6*MTY3NTc1NzA3NS4xLjEuMTY3NTc1NzEwNC4wLjAuMA..",
             url = "https://google.com",
-            publishedAt = "2023-01-02 10:21:00"
+            publishedAt = "2023-01-02 10:21:00",
+            liked = false
         )
     )
 }

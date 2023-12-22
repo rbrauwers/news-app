@@ -11,5 +11,6 @@ fun Article.toEntity() = ArticleEntity(
     url = url,
     urlToImage = urlToImage,
     publishedAt = publishedAt,
-    content = content
+    content = content,
+    liked = liked
 )

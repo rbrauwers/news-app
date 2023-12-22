@@ -11,6 +11,7 @@ data class Article(
     val urlToImage: String?,
     val publishedAt: String?,
     val content: String?,
+    val liked: Boolean = false,
     // Artificial ID since it is missing on API
     val id: Int = (author+title+description+url+urlToImage+publishedAt+content).hashCode()
 )

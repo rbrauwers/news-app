@@ -32,6 +32,9 @@ internal class SyncedHeadlineRepository @Inject constructor(
                 val response = networkDataSource
                     .getHeadlines()
 
+                val duplicates = response.articles.groupBy { it.id }.count { it.value.size > 1 }
+                println("DUPLICATES! $duplicates")
+
                 // Saves data in local store regardless if coroutine context was cancelled
                 withContext(NonCancellable) {
                     if (response.status.isOk()) {
@@ -49,4 +52,11 @@ internal class SyncedHeadlineRepository @Inject constructor(
             }
         }
     }
+
+    override suspend fun updateLiked(id: Int, liked: Boolean) {
+        withContext(Dispatchers.IO) {
+            dao.updateLiked(id = id, liked = liked)
+        }
+    }
+
 }
