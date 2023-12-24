@@ -91,6 +91,7 @@ private fun Article.toArticleUi(
     liked = liked
 )
 
+@Immutable
 internal data class ArticleUi(
     val id: Int,
     val author: String?,
