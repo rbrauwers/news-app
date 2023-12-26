@@ -1,13 +1,17 @@
 [versions]
 androidx-junit = "1.1.5"
+benchmark-macro-junit4 = "1.2.2"
 espresso = "3.5.1"
 junit = "4.13.2"
 robolectric = "4.11.1"
+uiautomator = "2.2.0"
 
 [libraries]
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }
+benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmark-macro-junit4" }
 compose-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 compose-manifest = { module = "androidx.compose.ui:ui-test-manifest"  }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
 junit = { module = "junit:junit", version.ref = "junit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }

@@ -26,6 +26,11 @@ gradlePlugin {
             implementationClass = "AndroidLibraryConventionPlugin"
         }
 
+        register("androidTest") {
+            id = "com.rbrauwers.newapp.test.plugin"
+            implementationClass = "AndroidTestConventionPlugin"
+        }
+
         register("androidLibraryCompose") {
             id = "com.rbrauwers.newapp.library.compose.plugin"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
