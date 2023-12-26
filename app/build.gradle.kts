@@ -1,6 +1,7 @@
 plugins {
     id("com.rbrauwers.newapp.application.plugin")
     id("com.rbrauwers.newapp.hilt.plugin")
+    alias(libs.plugins.baseline.profiler)
 }
 
 android {
@@ -12,13 +13,46 @@ android {
         versionName = "1.0"
     }
 
+    // [START macrobenchmark_setup_app_build_type]
+    buildTypes {
+        val release = getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            // In real app, this would use its own release keystore
+            signingConfig = signingConfigs.getByName("debug")
+        }
+
+        create("benchmark") {
+            initWith(release)
+            signingConfig = signingConfigs.getByName("debug")
+            // [START_EXCLUDE silent]
+            // Selects release buildType if the benchmark buildType not available in other modules.
+            matchingFallbacks.add("release")
+            // [END_EXCLUDE]
+            proguardFiles("benchmark-rules.pro")
+        }
+    }
+    // [END macrobenchmark_setup_app_build_type]
+
+    /*
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+        }
     }
+    */
 
     packaging {
         resources {
@@ -30,6 +64,8 @@ android {
 dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    implementation(libs.profile.installer)
 
     implementation(project(":core:data"))
     implementation(project(":core:network"))
@@ -44,6 +80,8 @@ dependencies {
     kover(project(":core:ui"))
     kover(project(":features:headline"))
     kover(project(":features:source"))
+
+    baselineProfile(project(":benchmark"))
 }
 
 kapt {
@@ -54,4 +92,9 @@ koverReport {
     androidReports("debug") {
 
     }
+}
+
+baselineProfile {
+    automaticGenerationDuringBuild = true
+    //mergeIntoMain = true
 }

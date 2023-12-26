@@ -60,7 +60,6 @@ internal fun Project.configureKotlinAndroid(
     /**
      * Only dependencies common to all modules (either applications or libraries) should be placed here
      */
-
     val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
     dependencies {
         add("implementation", libs.findLibrary("appcompat").get())
