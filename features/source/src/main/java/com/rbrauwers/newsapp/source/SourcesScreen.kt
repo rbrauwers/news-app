@@ -17,6 +17,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,11 +30,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.NewsSource
 import com.rbrauwers.newsapp.ui.AppState
+import com.rbrauwers.newsapp.ui.BadgedTopBar
+import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.LocalSpacing
+import com.rbrauwers.newsapp.ui.NewsDefaultTopBar
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
@@ -55,9 +61,16 @@ internal fun SourcesRoute(
 ) {
     val uiState: SourcesUiState by viewModel.sourcesUiState.collectAsStateWithLifecycle()
 
-    AppState.setTopBarState(topBarState = TopBarState(
-        title = stringResource(id = R.string.sources)
-    ))
+    LocalAppState.current.setTopBarState(
+        topBarState = TopBarState(
+            title = {
+                BadgedTopBar(
+                    title = stringResource(id = R.string.sources),
+                    count = (uiState as? SourcesUiState.Success)?.sources?.size
+                )
+            }
+        )
+    )
 
     SourcesScreen(
         uiState = uiState,

@@ -17,13 +17,12 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -43,6 +42,7 @@ import com.rbrauwers.newsapp.source.sourceScreen
 import com.rbrauwers.newsapp.source.sourcesNavHost
 import com.rbrauwers.newsapp.source.sourcesScreen
 import com.rbrauwers.newsapp.ui.AppState
+import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -76,65 +76,64 @@ private fun Content() {
 
     val bottomBarState = currentScreen?.isHome == true
 
-    NewsAppTheme {
-        Scaffold(
-            topBar = {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Text(
-                            text = AppState.topBarState?.title ?: "",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    },
-                    scrollBehavior = scrollBehavior,
-                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                    actions = {
-                        if (currentScreen?.isHome == true) {
-                            IconButton(
-                                onClick = {
-                                    navController.navigateToInfo()
+    CompositionLocalProvider(LocalAppState provides AppState()) {
+        val topBarState = LocalAppState.current.topBarState
+
+        NewsAppTheme {
+            Scaffold(
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = topBarState?.title ?: { },
+                        scrollBehavior = scrollBehavior,
+                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                        actions = {
+                            if (currentScreen?.isHome == true) {
+                                IconButton(
+                                    onClick = {
+                                        navController.navigateToInfo()
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = infoScreen.icon,
+                                        contentDescription = null
+                                    )
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = infoScreen.icon,
-                                    contentDescription = null
-                                )
                             }
+                        },
+                        navigationIcon = topBarState?.navigationIcon ?: { },
+                    )
+                },
+                bottomBar = {
+                    AnimatedContent(
+                        targetState = bottomBarState,
+                        transitionSpec = {
+                            slideInVertically(initialOffsetY = { it }) togetherWith
+                                    slideOutVertically(targetOffsetY = { it })
+                        }, label = ""
+                    ) { isVisible ->
+                        if (isVisible) {
+                            NavigationBar {
+                                NewsBottomBar(navController = navController)
+                                SourcesBottomBar(navController = navController)
+                            }
+                        } else {
+                            Box(modifier = Modifier.fillMaxWidth())
                         }
-                    },
-                    navigationIcon = AppState.topBarState?.navigationIcon ?: { },
-                )
-            },
-            bottomBar = {
-                AnimatedContent(
-                    targetState = bottomBarState,
-                    transitionSpec = {
-                        slideInVertically(initialOffsetY = { it }) togetherWith
-                                slideOutVertically(targetOffsetY = { it })
-                    }, label = ""
-                ) { isVisible ->
-                    if (isVisible) {
-                        NavigationBar {
-                            NewsBottomBar(navController = navController)
-                            SourcesBottomBar(navController = navController)
-                        }
-                    } else {
-                        Box(modifier = Modifier.fillMaxWidth())
                     }
                 }
-            }
-        ) { innerPadding ->
-            NavHost(
-                navController = navController,
-                startDestination = headlinesBaseRoute,
-                modifier = Modifier.padding(innerPadding)
-            ) {
-                headlinesNavHost()
-                sourcesNavHost()
+            ) { innerPadding ->
+                NavHost(
+                    navController = navController,
+                    startDestination = headlinesBaseRoute,
+                    modifier = Modifier.padding(innerPadding)
+                ) {
+                    headlinesNavHost()
+                    sourcesNavHost()
 
-                infoScreen(
-                    navController = navController
-                )
+                    infoScreen(
+                        navController = navController
+                    )
+                }
             }
         }
     }

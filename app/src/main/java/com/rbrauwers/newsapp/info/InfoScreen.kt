@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import com.rbrauwers.newsapp.R
 import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.BackNavigationIcon
+import com.rbrauwers.newsapp.ui.LocalAppState
+import com.rbrauwers.newsapp.ui.NewsDefaultTopBar
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
 
@@ -58,9 +60,9 @@ internal fun InfoRoute(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit
 ) {
-    AppState.setTopBarState(
+    LocalAppState.current.setTopBarState(
         topBarState = TopBarState(
-            title = stringResource(id = R.string.app_info),
+            title = { NewsDefaultTopBar(title = stringResource(id = R.string.app_info)) },
             navigationIcon = {
                 BackNavigationIcon(onBackClick = onBackClick)
             }

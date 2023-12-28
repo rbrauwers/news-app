@@ -57,7 +57,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.rbrauwers.newsapp.ui.AppState
+import com.rbrauwers.newsapp.ui.BadgedTopBar
+import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
@@ -79,7 +80,16 @@ internal fun HeadlinesRoute(
 ) {
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
 
-    AppState.setTopBarState(topBarState = TopBarState(title = stringResource(id = R.string.headlines)))
+    LocalAppState.current.setTopBarState(
+        topBarState = TopBarState(
+            title = {
+                BadgedTopBar(
+                    title = stringResource(id = R.string.headlines),
+                    count = (uiState as? HeadlineUiState.Success)?.headlines?.size
+                )
+            }
+        )
+    )
 
     HeadlinesScreen(
         uiState = uiState,
