@@ -14,7 +14,6 @@ fun NavController.navigateToInfo(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.infoScreen(
     modifier: Modifier = Modifier,
-    onComposeTopBarState: (TopBarState) -> Unit,
     navController: NavController
 ) {
     composable(
@@ -22,7 +21,6 @@ fun NavGraphBuilder.infoScreen(
     ) {
         InfoRoute(
             modifier = modifier,
-            onComposeTopBarState = onComposeTopBarState,
             onBackClick = {
                 navController.popBackStack()
             }

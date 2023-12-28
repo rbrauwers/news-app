@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,9 +34,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.Country
 import com.rbrauwers.newsapp.model.NewsSource
 import com.rbrauwers.newsapp.ui.BackNavigationIcon
+import com.rbrauwers.newsapp.ui.InfoActionButton
+import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
+import com.rbrauwers.newsapp.ui.NewsDefaultTopBar
 import com.rbrauwers.newsapp.ui.Screen
-import com.rbrauwers.newsapp.ui.SetTopBarState
 import com.rbrauwers.newsapp.ui.TopBarState
 
 internal const val sourceIdArg = "id"
@@ -44,29 +47,32 @@ val sourceScreen = Screen(
     baseRoute = sourcesBaseRoute,
     route = "${sourcesBaseRoute}/{$sourceIdArg}",
     title = R.string.source_details,
-    icon = Icons.Filled.Person,
-    isHome = false
+    icon = Icons.Filled.Person
 )
 
 @Composable
 internal fun SourceRoute(
     modifier: Modifier = Modifier,
     viewModel: SourceViewModel = hiltViewModel(),
-    onComposeTopBarState: (TopBarState) -> Unit,
     onBackClick: () -> Unit
 ) {
     val sourceUiState: SourceUiState by viewModel.sourceUiState.collectAsStateWithLifecycle()
     val countryUiState: CountryUiState by viewModel.countryUiState.collectAsStateWithLifecycle()
 
-    SetTopBarState(
-        topBarState = TopBarState(
-            title = stringResource(id = R.string.source_details),
-            navigationIcon = {
-                BackNavigationIcon(onBackClick = onBackClick)
-            }
-        ),
-        onComposeTopBarState = onComposeTopBarState
-    )
+    LocalAppState.current.apply {
+        LaunchedEffect(Unit) {
+            setTopBarState(
+                topBarState = TopBarState(
+                    title = {
+                        NewsDefaultTopBar(title = stringResource(id = R.string.source_details))
+                    },
+                    navigationIcon = {
+                        BackNavigationIcon(onBackClick = onBackClick)
+                    }
+                )
+            )
+        }
+    }
 
     SourceScreen(
         modifier = modifier,

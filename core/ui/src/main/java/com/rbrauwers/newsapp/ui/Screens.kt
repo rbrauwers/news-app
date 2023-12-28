@@ -7,6 +7,5 @@ class Screen(
     val baseRoute: String,
     val route: String,
     @StringRes val title: Int,
-    val icon: ImageVector,
-    val isHome: Boolean
+    val icon: ImageVector
 )

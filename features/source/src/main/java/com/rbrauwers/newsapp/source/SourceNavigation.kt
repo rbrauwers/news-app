@@ -5,9 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -16,36 +14,33 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.rbrauwers.newsapp.model.NewsSource
-import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.NewsAppNavigationBarItem
-import com.rbrauwers.newsapp.ui.TopBarState
 
 internal const val sourcesBaseRoute = "sources"
 
-fun NavGraphBuilder.sourcesNavHost(onComposeTopBarState: (TopBarState) -> Unit) {
+fun NavGraphBuilder.sourcesNavHost(onNavigateToInfo: () -> Unit) {
     composable(route = sourcesBaseRoute) {
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = sourcesBaseRoute) {
             sourcesNavGraph(
-                onComposeTopBarState = onComposeTopBarState,
-                navController = navController
+                navController = navController,
+                onNavigateToInfo = onNavigateToInfo
             )
         }
     }
 }
 
 private fun NavGraphBuilder.sourcesNavGraph(
-    onComposeTopBarState: (TopBarState) -> Unit,
-    navController: NavController
+    navController: NavController,
+    onNavigateToInfo: () -> Unit
 ) {
     navigation(startDestination = sourcesScreen.route, route = sourcesBaseRoute) {
         sourcesScreen(
-            onComposeTopBarState = onComposeTopBarState,
-            navController = navController
+            navController = navController,
+            onNavigateToInfo = onNavigateToInfo
         )
 
         sourceScreen(
-            onComposeTopBarState = onComposeTopBarState,
             onBackClick = {
                 navController.popBackStack()
             }
@@ -56,7 +51,7 @@ private fun NavGraphBuilder.sourcesNavGraph(
 private fun NavGraphBuilder.sourcesScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    onComposeTopBarState: (TopBarState) -> Unit
+    onNavigateToInfo: () -> Unit
 ) {
     composable(route = sourcesScreen.route) {
         SourcesRoute(
@@ -64,15 +59,14 @@ private fun NavGraphBuilder.sourcesScreen(
             onNavigateToSource = {
                 navController.navigateToSource(source = it)
             },
-            onComposeTopBarState = onComposeTopBarState
+            onNavigateToInfo = onNavigateToInfo
         )
     }
 }
 
 private fun NavGraphBuilder.sourceScreen(
     modifier: Modifier = Modifier,
-    onComposeTopBarState: (TopBarState) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     composable(
         route = sourceScreen.route,
@@ -80,7 +74,6 @@ private fun NavGraphBuilder.sourceScreen(
     ) { entry ->
         SourceRoute(
             modifier = modifier,
-            onComposeTopBarState = onComposeTopBarState,
             onBackClick = onBackClick
             /*
             There is no need to get this param explicitly, because it is automatically set to SourceViewModel.savedStateHandle
