@@ -58,6 +58,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.rbrauwers.newsapp.ui.BadgedTopBar
+import com.rbrauwers.newsapp.ui.BottomBarState
+import com.rbrauwers.newsapp.ui.InfoActionButton
 import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
@@ -69,27 +71,36 @@ val headlinesScreen = Screen(
     baseRoute = headlinesBaseRoute,
     route = "$headlinesBaseRoute/list",
     title = R.string.headlines,
-    icon = Icons.AutoMirrored.Filled.List,
-    isHome = true
+    icon = Icons.AutoMirrored.Filled.List
 )
 
 @Composable
 internal fun HeadlinesRoute(
     modifier: Modifier = Modifier,
-    viewModel: HeadlineViewModel = hiltViewModel()
+    viewModel: HeadlineViewModel = hiltViewModel(),
+    onNavigateToInfo: () -> Unit
 ) {
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
 
-    LocalAppState.current.setTopBarState(
-        topBarState = TopBarState(
-            title = {
-                BadgedTopBar(
-                    title = stringResource(id = R.string.headlines),
-                    count = (uiState as? HeadlineUiState.Success)?.headlines?.size
+    LocalAppState.current.apply {
+        LaunchedEffect(uiState) {
+            setTopBarState(
+                topBarState = TopBarState(
+                    title = {
+                        BadgedTopBar(
+                            title = stringResource(id = R.string.headlines),
+                            count = (uiState as? HeadlineUiState.Success)?.headlines?.size
+                        )
+                    },
+                    actions =  {
+                        InfoActionButton(onClick = onNavigateToInfo)
+                    }
                 )
-            }
-        )
-    )
+            )
+
+            setBottomBarState(bottomBarState = BottomBarState(isVisible = true))
+        }
+    }
 
     HeadlinesScreen(
         uiState = uiState,

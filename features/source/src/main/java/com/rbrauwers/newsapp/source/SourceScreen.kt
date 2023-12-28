@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.Country
 import com.rbrauwers.newsapp.model.NewsSource
 import com.rbrauwers.newsapp.ui.BackNavigationIcon
+import com.rbrauwers.newsapp.ui.InfoActionButton
 import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.NewsDefaultTopBar
@@ -45,8 +47,7 @@ val sourceScreen = Screen(
     baseRoute = sourcesBaseRoute,
     route = "${sourcesBaseRoute}/{$sourceIdArg}",
     title = R.string.source_details,
-    icon = Icons.Filled.Person,
-    isHome = false
+    icon = Icons.Filled.Person
 )
 
 @Composable
@@ -58,16 +59,20 @@ internal fun SourceRoute(
     val sourceUiState: SourceUiState by viewModel.sourceUiState.collectAsStateWithLifecycle()
     val countryUiState: CountryUiState by viewModel.countryUiState.collectAsStateWithLifecycle()
 
-    LocalAppState.current.setTopBarState(
-        topBarState = TopBarState(
-            title = {
-                NewsDefaultTopBar(title = stringResource(id = R.string.source_details))
-            },
-            navigationIcon = {
-                BackNavigationIcon(onBackClick = onBackClick)
-            }
-        )
-    )
+    LocalAppState.current.apply {
+        LaunchedEffect(Unit) {
+            setTopBarState(
+                topBarState = TopBarState(
+                    title = {
+                        NewsDefaultTopBar(title = stringResource(id = R.string.source_details))
+                    },
+                    navigationIcon = {
+                        BackNavigationIcon(onBackClick = onBackClick)
+                    }
+                )
+            )
+        }
+    }
 
     SourceScreen(
         modifier = modifier,

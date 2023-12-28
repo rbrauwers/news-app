@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -27,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -34,19 +33,15 @@ import androidx.navigation.compose.rememberNavController
 import com.rbrauwers.newsapp.headline.HeadlinesNavigationBarItem
 import com.rbrauwers.newsapp.headline.headlinesBaseRoute
 import com.rbrauwers.newsapp.headline.headlinesNavHost
-import com.rbrauwers.newsapp.headline.headlinesScreen
 import com.rbrauwers.newsapp.info.infoScreen
 import com.rbrauwers.newsapp.info.navigateToInfo
 import com.rbrauwers.newsapp.source.SourcesNavigationBarItem
-import com.rbrauwers.newsapp.source.sourceScreen
 import com.rbrauwers.newsapp.source.sourcesNavHost
-import com.rbrauwers.newsapp.source.sourcesScreen
 import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.LocalAppState
+import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
-
-private val screens = listOf(headlinesScreen, sourcesScreen, sourceScreen, infoScreen)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -65,42 +60,20 @@ class MainActivity : ComponentActivity() {
 private fun Content() {
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentBackStackEntry?.destination?.route
-
-    val currentScreen = currentRoute?.let { route ->
-        screens.firstOrNull {
-            it.route.contains(route)
-        }
-    }
-
-    val bottomBarState = currentScreen?.isHome == true
 
     CompositionLocalProvider(LocalAppState provides AppState()) {
-        val topBarState = LocalAppState.current.topBarState
+        val topBarState: TopBarState by LocalAppState.current.topBarStateFlow.collectAsStateWithLifecycle()
+        val bottomBarState = LocalAppState.current.bottomBarStateFlow.collectAsStateWithLifecycle()
 
         NewsAppTheme {
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = topBarState?.title ?: { },
+                        title = topBarState.title ?: { },
                         scrollBehavior = scrollBehavior,
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                        actions = {
-                            if (currentScreen?.isHome == true) {
-                                IconButton(
-                                    onClick = {
-                                        navController.navigateToInfo()
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = infoScreen.icon,
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        },
-                        navigationIcon = topBarState?.navigationIcon ?: { },
+                        actions = topBarState.actions ?: { },
+                        navigationIcon = topBarState.navigationIcon ?: { },
                     )
                 },
                 bottomBar = {
@@ -110,8 +83,8 @@ private fun Content() {
                             slideInVertically(initialOffsetY = { it }) togetherWith
                                     slideOutVertically(targetOffsetY = { it })
                         }, label = ""
-                    ) { isVisible ->
-                        if (isVisible) {
+                    ) { state ->
+                        if (state.value.isVisible) {
                             NavigationBar {
                                 NewsBottomBar(navController = navController)
                                 SourcesBottomBar(navController = navController)
@@ -127,8 +100,17 @@ private fun Content() {
                     startDestination = headlinesBaseRoute,
                     modifier = Modifier.padding(innerPadding)
                 ) {
-                    headlinesNavHost()
-                    sourcesNavHost()
+                    headlinesNavHost(
+                        onNavigateToInfo = {
+                            navController.navigateToInfo()
+                        }
+                    )
+
+                    sourcesNavHost(
+                        onNavigateToInfo = {
+                            navController.navigateToInfo()
+                        }
+                    )
 
                     infoScreen(
                         navController = navController

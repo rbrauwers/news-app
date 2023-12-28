@@ -17,28 +17,26 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.NewsSource
-import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.BadgedTopBar
+import com.rbrauwers.newsapp.ui.BottomBarState
+import com.rbrauwers.newsapp.ui.InfoActionButton
 import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.LocalSpacing
-import com.rbrauwers.newsapp.ui.NewsDefaultTopBar
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
@@ -47,8 +45,7 @@ val sourcesScreen = Screen(
     baseRoute = sourcesBaseRoute,
     route = "$sourcesBaseRoute/list",
     title = R.string.sources,
-    icon = Icons.Filled.Person,
-    isHome = true
+    icon = Icons.Filled.Person
 )
 
 @Composable
@@ -57,20 +54,29 @@ internal fun SourcesRoute(
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background),
     viewModel: SourcesViewModel = hiltViewModel(),
-    onNavigateToSource: (NewsSource) -> Unit
+    onNavigateToSource: (NewsSource) -> Unit,
+    onNavigateToInfo: () -> Unit
 ) {
     val uiState: SourcesUiState by viewModel.sourcesUiState.collectAsStateWithLifecycle()
 
-    LocalAppState.current.setTopBarState(
-        topBarState = TopBarState(
-            title = {
-                BadgedTopBar(
-                    title = stringResource(id = R.string.sources),
-                    count = (uiState as? SourcesUiState.Success)?.sources?.size
+    LocalAppState.current.apply {
+        LaunchedEffect(uiState) {
+            setTopBarState(
+                topBarState = TopBarState(
+                    title = {
+                        BadgedTopBar(
+                            title = stringResource(id = R.string.sources),
+                            count = (uiState as? SourcesUiState.Success)?.sources?.size
+                        )
+                    },
+                    actions =  {
+                        InfoActionButton(onClick = onNavigateToInfo)
+                    }
                 )
-            }
-        )
-    )
+            )
+            setBottomBarState(bottomBarState = BottomBarState(isVisible = true))
+        }
+    }
 
     SourcesScreen(
         uiState = uiState,

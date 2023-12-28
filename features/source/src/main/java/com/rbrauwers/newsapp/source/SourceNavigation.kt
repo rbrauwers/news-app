@@ -5,9 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -16,29 +14,30 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.rbrauwers.newsapp.model.NewsSource
-import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.NewsAppNavigationBarItem
-import com.rbrauwers.newsapp.ui.TopBarState
 
 internal const val sourcesBaseRoute = "sources"
 
-fun NavGraphBuilder.sourcesNavHost() {
+fun NavGraphBuilder.sourcesNavHost(onNavigateToInfo: () -> Unit) {
     composable(route = sourcesBaseRoute) {
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = sourcesBaseRoute) {
             sourcesNavGraph(
-                navController = navController
+                navController = navController,
+                onNavigateToInfo = onNavigateToInfo
             )
         }
     }
 }
 
 private fun NavGraphBuilder.sourcesNavGraph(
-    navController: NavController
+    navController: NavController,
+    onNavigateToInfo: () -> Unit
 ) {
     navigation(startDestination = sourcesScreen.route, route = sourcesBaseRoute) {
         sourcesScreen(
-            navController = navController
+            navController = navController,
+            onNavigateToInfo = onNavigateToInfo
         )
 
         sourceScreen(
@@ -52,20 +51,22 @@ private fun NavGraphBuilder.sourcesNavGraph(
 private fun NavGraphBuilder.sourcesScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    onNavigateToInfo: () -> Unit
 ) {
     composable(route = sourcesScreen.route) {
         SourcesRoute(
             modifier = modifier,
             onNavigateToSource = {
                 navController.navigateToSource(source = it)
-            }
+            },
+            onNavigateToInfo = onNavigateToInfo
         )
     }
 }
 
 private fun NavGraphBuilder.sourceScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     composable(
         route = sourceScreen.route,

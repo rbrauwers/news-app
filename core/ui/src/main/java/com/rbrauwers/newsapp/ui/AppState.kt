@@ -2,20 +2,23 @@ package com.rbrauwers.newsapp.ui
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class AppState {
-    private val topBarStateFlow = MutableStateFlow<TopBarState?>(null)
+    private val _topBarStateFlow = MutableStateFlow(TopBarState())
+    private val _bottomBarStateFlow = MutableStateFlow(BottomBarState(isVisible = true))
 
-    val topBarState: TopBarState?
-        @Composable get() = topBarStateFlow.collectAsState().value
+    val topBarStateFlow = _topBarStateFlow.asStateFlow()
+    val bottomBarStateFlow = _bottomBarStateFlow.asStateFlow()
 
-    fun setTopBarState(topBarState: TopBarState?) {
-        topBarStateFlow.value = topBarState
+    fun setTopBarState(topBarState: TopBarState) {
+        _topBarStateFlow.value = topBarState
+    }
+
+    fun setBottomBarState(bottomBarState: BottomBarState) {
+        _bottomBarStateFlow.value = bottomBarState
     }
 }
 
@@ -27,4 +30,8 @@ data class TopBarState(
     val title: (@Composable () -> Unit)? = null,
     val navigationIcon: (@Composable () -> Unit)? = null,
     val actions: (@Composable RowScope.() -> Unit)? = null
+)
+
+data class BottomBarState(
+    val isVisible: Boolean
 )

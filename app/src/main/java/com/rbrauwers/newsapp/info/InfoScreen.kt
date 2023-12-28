@@ -11,22 +11,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rbrauwers.newsapp.R
-import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.BackNavigationIcon
+import com.rbrauwers.newsapp.ui.BottomBarState
 import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.NewsDefaultTopBar
 import com.rbrauwers.newsapp.ui.Screen
@@ -36,8 +37,7 @@ val infoScreen = Screen(
     baseRoute = "info",
     route = "info",
     title = R.string.app_info,
-    icon = Icons.Outlined.Info,
-    isHome = false
+    icon = Icons.Outlined.Info
 )
 
 private data class Lib(
@@ -60,14 +60,19 @@ internal fun InfoRoute(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit
 ) {
-    LocalAppState.current.setTopBarState(
-        topBarState = TopBarState(
-            title = { NewsDefaultTopBar(title = stringResource(id = R.string.app_info)) },
-            navigationIcon = {
-                BackNavigationIcon(onBackClick = onBackClick)
-            }
-        )
-    )
+    LocalAppState.current.apply {
+        LaunchedEffect(Unit) {
+            setTopBarState(
+                topBarState = TopBarState(
+                    title = { NewsDefaultTopBar(title = stringResource(id = R.string.app_info)) },
+                    navigationIcon = {
+                        BackNavigationIcon(onBackClick = onBackClick)
+                    }
+                )
+            )
+            setBottomBarState(bottomBarState = BottomBarState(isVisible = false))
+        }
+    }
 
     InfoScreen(modifier = modifier.fillMaxSize())
 }
@@ -84,7 +89,7 @@ private fun InfoScreen(modifier: Modifier = Modifier) {
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Divider(modifier = Modifier.height(2.dp))
+                HorizontalDivider(modifier = Modifier.height(2.dp))
                 Spacer(modifier = Modifier.height(4.dp))
             }
 
@@ -109,14 +114,14 @@ private fun InfoScreen(modifier: Modifier = Modifier) {
                     Spacer(modifier = Modifier.weight(1f))
 
                     Icon(
-                        imageVector = Icons.Default.KeyboardArrowRight,
+                        imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
                         contentDescription = "",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
                 if (!isLast) {
-                    Divider(modifier = Modifier.height(1.dp))
+                    HorizontalDivider(modifier = Modifier.height(1.dp))
                 }
             }
         }
