@@ -72,6 +72,120 @@ class ExampleUnitTest {
         val also = user.also { Person(name = it.name) }
     }
 
+    fun uniqueStrings(items: List<*>): Set<String> {
+        val strings = mutableSetOf<String>()
+
+        items.forEach {
+            when (it) {
+                is String -> strings.add(it)
+                is List<*> -> strings += uniqueStrings(it)
+            }
+        }
+
+        return strings
+    }
+
+    /*
+    fun checkConstrain(parent: Any): List<String> {
+        val memberProperties = parent::class.memberProperties
+        var result = memberProperties
+            .filter { hasAnnotation(it) && propertyIsNull(it, parent) }
+            .map { formatResult(parent, it) }
+        memberProperties.filter { memberIsDataClass(it) }
+            .mapNotNull { getMemberPropertyInstance(parent, it) }
+            .forEach { result += checkConstrain(it) }
+        return result
+    }
+     */
+
+
+    @Test
+    fun f() {
+        //val items = listOf<Any>(1, "a", listOf("b", "c", 3), "b")
+        val items = listOf<Any>(1, "a", listOf("b", "c", 3), "b", listOf("b", "f", 3, listOf(9, "g", "b")))
+        val strings = uniqueStrings(items)
+        println("qqq strings: ${strings}")
+    }
+
+    fun associatedValues(items: List<Pair<String, Int>>) : Map<String, List<Int>> {
+        return items
+            .groupBy { it.first }
+            .mapValues {
+                it.value.map { it.second }
+            }
+    }
+
+    @Test
+    fun g() {
+        val items = listOf<Pair<String, Int>>(Pair("a", 1), Pair("a", 2), Pair("a", 2), Pair("b", 3))
+        println("qqq ${associatedValues(items)}")
+    }
+
+    fun encodeString(input: String): String {
+        var output = ""
+        var char: Char? = null
+        var count: Int? = null
+
+        input.forEachIndexed{ index, c ->
+            if (c != char) {
+                char?.let {
+                    output += char
+                }
+
+                count?.let {
+                    output += count
+                }
+
+                char = c
+                count = 1
+            } else {
+                count = count?.plus(1)
+            }
+
+            if (index == input.lastIndex && input.length > 1) {
+                char?.let {
+                    output += char
+                }
+
+                count?.let {
+                    output += count
+                }
+            }
+        }
+
+        return output
+    }
+
+    @Test
+    fun h() {
+        val input = "aaabbccccd"
+        println("qqq ${encodeString(input)}")
+    }
+
+    fun reminders(number: Int) : Int {
+        var result = 0
+
+        number.toString().forEach { n ->
+            val x = n.digitToInt()
+            val r = number.rem(x)
+
+            println("n: $n")
+            println("x: $x")
+            println("r: $r")
+
+            if (r == 0) {
+                result++
+            }
+        }
+
+        return result
+    }
+
+    @Test
+    fun l() {
+        println(reminders(232))
+    }
+
     data class User(val name: String)
     data class Person(val name: String)
 
