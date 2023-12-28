@@ -31,9 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.NewsSource
+import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.LocalSpacing
 import com.rbrauwers.newsapp.ui.Screen
-import com.rbrauwers.newsapp.ui.SetTopBarState
 import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
 
@@ -51,17 +51,13 @@ internal fun SourcesRoute(
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background),
     viewModel: SourcesViewModel = hiltViewModel(),
-    onNavigateToSource: (NewsSource) -> Unit,
-    onComposeTopBarState: (TopBarState) -> Unit
+    onNavigateToSource: (NewsSource) -> Unit
 ) {
     val uiState: SourcesUiState by viewModel.sourcesUiState.collectAsStateWithLifecycle()
 
-    SetTopBarState(
-        topBarState = TopBarState(
-            title = stringResource(id = R.string.sources)
-        ),
-        onComposeTopBarState = onComposeTopBarState
-    )
+    AppState.setTopBarState(topBarState = TopBarState(
+        title = stringResource(id = R.string.sources)
+    ))
 
     SourcesScreen(
         uiState = uiState,

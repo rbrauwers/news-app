@@ -7,12 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import kotlinx.coroutines.flow.MutableStateFlow
 
-@Composable
-fun rememberAppState() = remember(Unit) {
-    AppState()
-}
-
-class AppState {
+object AppState {
     private val topBarStateFlow = MutableStateFlow<TopBarState?>(null)
 
     val topBarState: TopBarState?
@@ -29,13 +24,3 @@ data class TopBarState(
     val navigationIcon: (@Composable () -> Unit)? = null,
     val actions: (@Composable RowScope.() -> Unit)? = null
 )
-
-/**
- * Screens should use this function to setup a dynamic/actioned top bar.
- */
-@Composable
-fun SetTopBarState(topBarState: TopBarState, onComposeTopBarState: (TopBarState) -> Unit) {
-    LaunchedEffect(Unit) {
-        onComposeTopBarState(topBarState)
-    }
-}

@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,7 +22,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,11 +43,8 @@ import com.rbrauwers.newsapp.source.sourceScreen
 import com.rbrauwers.newsapp.source.sourcesNavHost
 import com.rbrauwers.newsapp.source.sourcesScreen
 import com.rbrauwers.newsapp.ui.AppState
-import com.rbrauwers.newsapp.ui.TopBarState
-import com.rbrauwers.newsapp.ui.rememberAppState
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 private val screens = listOf(headlinesScreen, sourcesScreen, sourceScreen, infoScreen)
 
@@ -73,7 +67,6 @@ private fun Content() {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
-    val appState = rememberAppState()
 
     val currentScreen = currentRoute?.let { route ->
         screens.firstOrNull {
@@ -89,7 +82,7 @@ private fun Content() {
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
-                            text = appState.topBarState?.title ?: "",
+                            text = AppState.topBarState?.title ?: "",
                             style = MaterialTheme.typography.titleLarge
                         )
                     },
@@ -109,7 +102,7 @@ private fun Content() {
                             }
                         }
                     },
-                    navigationIcon = appState.topBarState?.navigationIcon ?: { },
+                    navigationIcon = AppState.topBarState?.navigationIcon ?: { },
                 )
             },
             bottomBar = {
@@ -131,20 +124,15 @@ private fun Content() {
                 }
             }
         ) { innerPadding ->
-            val onComposeTopBarState: (TopBarState) -> Unit = {
-                appState.setTopBarState(it)
-            }
-
             NavHost(
                 navController = navController,
                 startDestination = headlinesBaseRoute,
                 modifier = Modifier.padding(innerPadding)
             ) {
-                headlinesNavHost(onComposeTopBarState = onComposeTopBarState)
-                sourcesNavHost(onComposeTopBarState = onComposeTopBarState)
+                headlinesNavHost()
+                sourcesNavHost()
 
                 infoScreen(
-                    onComposeTopBarState = onComposeTopBarState,
                     navController = navController
                 )
             }

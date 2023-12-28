@@ -28,7 +28,6 @@ import com.rbrauwers.newsapp.R
 import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.BackNavigationIcon
 import com.rbrauwers.newsapp.ui.Screen
-import com.rbrauwers.newsapp.ui.SetTopBarState
 import com.rbrauwers.newsapp.ui.TopBarState
 
 val infoScreen = Screen(
@@ -57,17 +56,15 @@ private val libs = listOf(
 @Composable
 internal fun InfoRoute(
     modifier: Modifier = Modifier,
-    onComposeTopBarState: (TopBarState) -> Unit,
     onBackClick: () -> Unit
 ) {
-    SetTopBarState(
+    AppState.setTopBarState(
         topBarState = TopBarState(
             title = stringResource(id = R.string.app_info),
             navigationIcon = {
                 BackNavigationIcon(onBackClick = onBackClick)
             }
-        ),
-        onComposeTopBarState = onComposeTopBarState
+        )
     )
 
     InfoScreen(modifier = modifier.fillMaxSize())

@@ -22,12 +22,11 @@ import com.rbrauwers.newsapp.ui.TopBarState
 
 internal const val sourcesBaseRoute = "sources"
 
-fun NavGraphBuilder.sourcesNavHost(onComposeTopBarState: (TopBarState) -> Unit) {
+fun NavGraphBuilder.sourcesNavHost() {
     composable(route = sourcesBaseRoute) {
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = sourcesBaseRoute) {
             sourcesNavGraph(
-                onComposeTopBarState = onComposeTopBarState,
                 navController = navController
             )
         }
@@ -35,17 +34,14 @@ fun NavGraphBuilder.sourcesNavHost(onComposeTopBarState: (TopBarState) -> Unit) 
 }
 
 private fun NavGraphBuilder.sourcesNavGraph(
-    onComposeTopBarState: (TopBarState) -> Unit,
     navController: NavController
 ) {
     navigation(startDestination = sourcesScreen.route, route = sourcesBaseRoute) {
         sourcesScreen(
-            onComposeTopBarState = onComposeTopBarState,
             navController = navController
         )
 
         sourceScreen(
-            onComposeTopBarState = onComposeTopBarState,
             onBackClick = {
                 navController.popBackStack()
             }
@@ -56,22 +52,19 @@ private fun NavGraphBuilder.sourcesNavGraph(
 private fun NavGraphBuilder.sourcesScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    onComposeTopBarState: (TopBarState) -> Unit
 ) {
     composable(route = sourcesScreen.route) {
         SourcesRoute(
             modifier = modifier,
             onNavigateToSource = {
                 navController.navigateToSource(source = it)
-            },
-            onComposeTopBarState = onComposeTopBarState
+            }
         )
     }
 }
 
 private fun NavGraphBuilder.sourceScreen(
     modifier: Modifier = Modifier,
-    onComposeTopBarState: (TopBarState) -> Unit,
     onBackClick: () -> Unit
 ) {
     composable(
@@ -80,7 +73,6 @@ private fun NavGraphBuilder.sourceScreen(
     ) { entry ->
         SourceRoute(
             modifier = modifier,
-            onComposeTopBarState = onComposeTopBarState,
             onBackClick = onBackClick
             /*
             There is no need to get this param explicitly, because it is automatically set to SourceViewModel.savedStateHandle

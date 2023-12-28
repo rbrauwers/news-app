@@ -18,17 +18,17 @@ import com.rbrauwers.newsapp.ui.TopBarState
 
 const val headlinesBaseRoute = "headlines"
 
-fun NavGraphBuilder.headlinesNavHost(onComposeTopBarState: (TopBarState) -> Unit) {
+fun NavGraphBuilder.headlinesNavHost() {
     composable(route = headlinesBaseRoute) {
         NavHost(navController = rememberNavController(), startDestination = headlinesBaseRoute) {
-            headlinesNavGraph(onComposeTopBarState = onComposeTopBarState)
+            headlinesNavGraph()
         }
     }
 }
 
-private fun NavGraphBuilder.headlinesNavGraph(onComposeTopBarState: (TopBarState) -> Unit) {
+private fun NavGraphBuilder.headlinesNavGraph() {
     navigation(startDestination = headlinesScreen.route, route = headlinesBaseRoute) {
-        headlinesScreen(onComposeTopBarState = onComposeTopBarState)
+        headlinesScreen()
     }
 }
 
@@ -36,9 +36,9 @@ fun NavController.navigateToHeadlines(navOptions: NavOptions? = null) {
     this.navigate(headlinesScreen.route, navOptions)
 }
 
-private fun NavGraphBuilder.headlinesScreen(modifier: Modifier = Modifier, onComposeTopBarState: (TopBarState) -> Unit) {
+private fun NavGraphBuilder.headlinesScreen(modifier: Modifier = Modifier) {
     composable(route = headlinesScreen.route) {
-        HeadlinesRoute(modifier = modifier, onComposeTopBarState = onComposeTopBarState)
+        HeadlinesRoute(modifier = modifier)
     }
 }
 

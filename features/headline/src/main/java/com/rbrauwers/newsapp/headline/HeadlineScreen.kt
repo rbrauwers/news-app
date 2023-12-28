@@ -57,8 +57,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.Screen
-import com.rbrauwers.newsapp.ui.SetTopBarState
 import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
@@ -75,15 +75,11 @@ val headlinesScreen = Screen(
 @Composable
 internal fun HeadlinesRoute(
     modifier: Modifier = Modifier,
-    viewModel: HeadlineViewModel = hiltViewModel(),
-    onComposeTopBarState: (TopBarState) -> Unit
+    viewModel: HeadlineViewModel = hiltViewModel()
 ) {
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
 
-    SetTopBarState(
-        topBarState = TopBarState(title = stringResource(id = R.string.headlines)),
-        onComposeTopBarState = onComposeTopBarState
-    )
+    AppState.setTopBarState(topBarState = TopBarState(title = stringResource(id = R.string.headlines)))
 
     HeadlinesScreen(
         uiState = uiState,
@@ -131,9 +127,11 @@ private fun HeadlinesScreen(
                 is HeadlineUiState.Loading -> {
                     newsAppDefaultProgressIndicatorItem(placeOnCenter = true)
                 }
+
                 is HeadlineUiState.Error -> {
                     // TODO
                 }
+
                 is HeadlineUiState.Success -> {
                     headlines(
                         headlines = uiState.headlines,
@@ -198,10 +196,14 @@ internal fun Headline(
             }
     ) {
         Row(
-            modifier = Modifier.fillMaxSize().padding(24.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp)
         ) {
             Column(
-                modifier = Modifier.weight(1f).fillMaxHeight(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(

@@ -32,10 +32,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.Country
 import com.rbrauwers.newsapp.model.NewsSource
+import com.rbrauwers.newsapp.ui.AppState
 import com.rbrauwers.newsapp.ui.BackNavigationIcon
 import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.Screen
-import com.rbrauwers.newsapp.ui.SetTopBarState
 import com.rbrauwers.newsapp.ui.TopBarState
 
 internal const val sourceIdArg = "id"
@@ -52,20 +52,18 @@ val sourceScreen = Screen(
 internal fun SourceRoute(
     modifier: Modifier = Modifier,
     viewModel: SourceViewModel = hiltViewModel(),
-    onComposeTopBarState: (TopBarState) -> Unit,
     onBackClick: () -> Unit
 ) {
     val sourceUiState: SourceUiState by viewModel.sourceUiState.collectAsStateWithLifecycle()
     val countryUiState: CountryUiState by viewModel.countryUiState.collectAsStateWithLifecycle()
 
-    SetTopBarState(
+    AppState.setTopBarState(
         topBarState = TopBarState(
             title = stringResource(id = R.string.source_details),
             navigationIcon = {
                 BackNavigationIcon(onBackClick = onBackClick)
             }
-        ),
-        onComposeTopBarState = onComposeTopBarState
+        )
     )
 
     SourceScreen(
