@@ -29,11 +29,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -49,6 +51,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,9 +64,9 @@ import com.rbrauwers.newsapp.ui.BadgedTopBar
 import com.rbrauwers.newsapp.ui.BottomBarState
 import com.rbrauwers.newsapp.ui.InfoActionButton
 import com.rbrauwers.newsapp.ui.LocalAppState
+import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
-import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import kotlinx.coroutines.async
 
@@ -81,6 +84,7 @@ internal fun HeadlinesRoute(
     onNavigateToInfo: () -> Unit
 ) {
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
+    val searchState: SearchState by viewModel.searchState.collectAsStateWithLifecycle()
 
     LocalAppState.current.apply {
         LaunchedEffect(uiState) {
@@ -104,9 +108,11 @@ internal fun HeadlinesRoute(
 
     HeadlinesScreen(
         uiState = uiState,
+        searchState = searchState,
         modifier = modifier,
         onRefresh = viewModel::sync,
-        onLikedChanged = viewModel::updateLiked
+        onLikedChanged = viewModel::updateLiked,
+        onQueryChange = viewModel::onQueryChange
     )
 }
 
@@ -114,9 +120,11 @@ internal fun HeadlinesRoute(
 @Composable
 private fun HeadlinesScreen(
     uiState: HeadlineUiState,
+    searchState: SearchState,
     modifier: Modifier = Modifier,
     onRefresh: suspend () -> Unit,
-    onLikedChanged: (ArticleUi, Boolean) -> Unit
+    onLikedChanged: (ArticleUi, Boolean) -> Unit,
+    onQueryChange: (String) -> Unit
 ) {
     val listState = rememberLazyListState()
     val arrangement = remember {
@@ -137,27 +145,50 @@ private fun HeadlinesScreen(
     val scaleFraction = if (pullToRefreshState.isRefreshing) 1f else
         LinearOutSlowInEasing.transform(pullToRefreshState.progress).coerceIn(0f, 1f)
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Box(Modifier.nestedScroll(pullToRefreshState.nestedScrollConnection)) {
-        LazyColumn(
-            state = listState,
-            modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = arrangement
+        SearchBar(
+            query = searchState.query.orEmpty(),
+            onQueryChange = onQueryChange,
+            onSearch = {
+                keyboardController?.hide()
+            },
+            active = true,
+            onActiveChange = { },
+            enabled = searchState.enabled,
+            placeholder = {
+                Text("Search articles")
+            },
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Search, contentDescription = null)
+            }
         ) {
-            when (uiState) {
-                is HeadlineUiState.Loading -> {
-                    newsAppDefaultProgressIndicatorItem(placeOnCenter = true)
-                }
+            if (uiState is HeadlineUiState.Loading || searchState.searching) {
+                NewsAppDefaultProgressIndicator(placeOnCenter = true)
+            }
 
-                is HeadlineUiState.Error -> {
-                    // TODO
-                }
+            LazyColumn(
+                state = listState,
+                modifier = modifier,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = arrangement
+            ) {
+                when (uiState) {
+                    is HeadlineUiState.Loading -> {
 
-                is HeadlineUiState.Success -> {
-                    headlines(
-                        headlines = uiState.headlines,
-                        onLikedChanged = onLikedChanged
-                    )
+                    }
+
+                    is HeadlineUiState.Error -> {
+                        // TODO
+                    }
+
+                    is HeadlineUiState.Success -> {
+                        headlines(
+                            headlines = uiState.headlines,
+                            onLikedChanged = onLikedChanged
+                        )
+                    }
                 }
             }
         }

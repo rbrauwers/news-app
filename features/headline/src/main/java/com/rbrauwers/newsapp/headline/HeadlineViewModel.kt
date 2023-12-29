@@ -10,13 +10,18 @@ import com.rbrauwers.newsapp.data.repository.HeadlineRepository
 import com.rbrauwers.newsapp.model.Article
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.system.measureTimeMillis
@@ -28,8 +33,40 @@ internal class HeadlineViewModel @Inject constructor(
     private val headlineRepository: HeadlineRepository
 ) : ViewModel() {
 
+    private val queryState = MutableStateFlow("")
+    private val searchingState = MutableStateFlow(false)
+
+    private val headlinesFlow = headlineRepository
+        .getHeadlines()
+        .asResult()
+        .map {
+            it.toHeadlineUiState()
+        }
+
+    @OptIn(FlowPreview::class)
     val headlineUiState: StateFlow<HeadlineUiState> =
-        produceHeadlineUiState()
+        queryState
+            .onEach {
+                searchingState.update { true }
+            }
+            .debounce(1000L)
+            .combine(headlinesFlow) { query, headlinesState ->
+                when {
+                    headlinesState is HeadlineUiState.Success && query.isNotBlank() -> {
+                        headlinesState.copy(
+                            headlines = headlinesState.headlines.filter {
+                                it.matches(query)
+                            }
+                        )
+                    }
+                    else -> {
+                        headlinesState
+                    }
+                }
+            }
+            .onEach {
+                searchingState.update { false }
+            }
             .flowOn(Dispatchers.IO)
             .stateIn(
                 scope = viewModelScope,
@@ -37,12 +74,19 @@ internal class HeadlineViewModel @Inject constructor(
                 initialValue = HeadlineUiState.Loading
             )
 
-    private fun produceHeadlineUiState(): Flow<HeadlineUiState> {
-        return headlineRepository
-            .getHeadlines()
-            .asResult()
-            .map { it.toHeadlineUiState() }
-    }
+    val searchState =
+        combine(queryState, searchingState, headlinesFlow) { query, searching, headlinesState ->
+            SearchState(
+                query = query,
+                searching = searching,
+                enabled = headlinesState is HeadlineUiState.Success
+            )
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = SearchState()
+        )
 
     suspend fun sync() {
         globalCounter++
@@ -56,6 +100,12 @@ internal class HeadlineViewModel @Inject constructor(
     fun updateLiked(articleUi: ArticleUi, liked: Boolean) {
         viewModelScope.launch {
             headlineRepository.updateLiked(id = articleUi.id, liked = liked)
+        }
+    }
+
+    fun onQueryChange(query: String) {
+        queryState.update {
+            query
         }
     }
 
@@ -74,7 +124,11 @@ private fun Result<List<Article>>.toHeadlineUiState(): HeadlineUiState {
         is Result.Error -> HeadlineUiState.Error
         is Result.Success -> {
             val converter = ConvertStringToDateTimeInstance()
-            HeadlineUiState.Success(data.map { it.toArticleUi(converter) })
+            HeadlineUiState.Success(
+                headlines = data.map {
+                    it.toArticleUi(converter)
+                }
+            )
         }
     }
 }
@@ -100,4 +154,17 @@ internal data class ArticleUi(
     val url: String?,
     val publishedAt: String?,
     val liked: Boolean
+) {
+    fun matches(query: String?): Boolean {
+        query ?: return true
+        return author.orEmpty().contains(query, ignoreCase = true) ||
+                title.orEmpty().contains(query, ignoreCase = true)
+    }
+}
+
+@Immutable
+internal data class SearchState(
+    val query: String? = null,
+    val searching: Boolean = false,
+    val enabled: Boolean = false
 )
