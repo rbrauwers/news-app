@@ -104,7 +104,6 @@ class ExampleUnitTest {
         //val items = listOf<Any>(1, "a", listOf("b", "c", 3), "b")
         val items = listOf<Any>(1, "a", listOf("b", "c", 3), "b", listOf("b", "f", 3, listOf(9, "g", "b")))
         val strings = uniqueStrings(items)
-        println("qqq strings: ${strings}")
     }
 
     fun associatedValues(items: List<Pair<String, Int>>) : Map<String, List<Int>> {
@@ -118,7 +117,6 @@ class ExampleUnitTest {
     @Test
     fun g() {
         val items = listOf<Pair<String, Int>>(Pair("a", 1), Pair("a", 2), Pair("a", 2), Pair("b", 3))
-        println("qqq ${associatedValues(items)}")
     }
 
     fun encodeString(input: String): String {
@@ -159,7 +157,6 @@ class ExampleUnitTest {
     @Test
     fun h() {
         val input = "aaabbccccd"
-        println("qqq ${encodeString(input)}")
     }
 
     fun reminders(number: Int) : Int {
