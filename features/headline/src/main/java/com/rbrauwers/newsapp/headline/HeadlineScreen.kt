@@ -69,7 +69,6 @@ import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
-import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import kotlinx.coroutines.async
 
 val headlinesScreen = Screen(
@@ -230,10 +229,6 @@ private fun LazyListScope.headlines(
     }
 }
 
-/**
- * Using constraint layout due an issue on compose that makes impossible to build this layout
- * with columns and rows. See Headline2 for more details.
- */
 @Composable
 internal fun Headline(
     article: ArticleUi,
@@ -361,56 +356,6 @@ private fun HeadlinePreview() {
             liked = false
         ),
         onLikedChanged = { _, _ -> }
-    )
-}
-
-
-// TODO: test this layout on next compose releases. It should work
-@Composable
-private fun Headline2(article: ArticleUi) {
-    NewsAppTheme {
-        Card(
-            modifier = Modifier
-                .height(200.dp)
-                .fillMaxWidth()
-                .padding(24.dp)
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(
-                    text = article.title.orEmpty(),
-                    maxLines = 1,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                Text(
-                    text = "Teste",
-                    maxLines = 1,
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier
-                        .background(Color.Yellow)
-                        .weight(1f, fill = false)
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun HeadlinePreview2() {
-    Headline2(
-        article = ArticleUi(
-            id = 1,
-            author = "Simpsons",
-            title = "Inflation is super high is super high is super high is super high is super high",
-            urlToImage = "https://images.pexels.com/photos/34299/herbs-flavoring-seasoning-cooking.jpg?cs=srgb&dl=pexels-pixabay-34299.jpg&fm=jpg&w=640&h=427&_gl=1*1urd5oa*_ga*MzQ2NzQzNzA3LjE2NzU3NTcwNzU.*_ga_8JE65Q40S6*MTY3NTc1NzA3NS4xLjEuMTY3NTc1NzEwNC4wLjAuMA..",
-            url = "https://google.com",
-            publishedAt = "2023-01-02 10:21:00",
-            liked = false
-        )
     )
 }
 
