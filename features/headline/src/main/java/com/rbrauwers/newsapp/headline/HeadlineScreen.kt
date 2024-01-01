@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -30,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -50,13 +52,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,6 +70,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.rbrauwers.newsapp.ui.BadgedTopBar
 import com.rbrauwers.newsapp.ui.BottomBarState
+import com.rbrauwers.newsapp.ui.CenteredError
 import com.rbrauwers.newsapp.ui.InfoActionButton
 import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
@@ -87,6 +94,29 @@ internal fun HeadlinesRoute(
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
     val searchState: SearchState by viewModel.searchState.collectAsStateWithLifecycle()
 
+    HeadlinesScreen(
+        uiState = uiState,
+        searchState = searchState,
+        modifier = modifier,
+        onRefresh = viewModel::sync,
+        onLikedChanged = viewModel::updateLiked,
+        onQueryChange = viewModel::onQueryChange,
+        onNavigateToInfo = onNavigateToInfo
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HeadlinesScreen(
+    uiState: HeadlineUiState,
+    searchState: SearchState,
+    modifier: Modifier = Modifier,
+    onRefresh: suspend () -> Unit,
+    onLikedChanged: (ArticleUi, Boolean) -> Unit,
+    onQueryChange: (String) -> Unit,
+    onNavigateToInfo: () -> Unit
+
+) {
     LocalAppState.current.apply {
         LaunchedEffect(uiState) {
             setTopBarState(
@@ -107,26 +137,6 @@ internal fun HeadlinesRoute(
         }
     }
 
-    HeadlinesScreen(
-        uiState = uiState,
-        searchState = searchState,
-        modifier = modifier,
-        onRefresh = viewModel::sync,
-        onLikedChanged = viewModel::updateLiked,
-        onQueryChange = viewModel::onQueryChange
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun HeadlinesScreen(
-    uiState: HeadlineUiState,
-    searchState: SearchState,
-    modifier: Modifier = Modifier,
-    onRefresh: suspend () -> Unit,
-    onLikedChanged: (ArticleUi, Boolean) -> Unit,
-    onQueryChange: (String) -> Unit
-) {
     val listState = rememberLazyListState()
     val arrangement = remember {
         if (uiState is HeadlineUiState.Success) Arrangement.Center else Arrangement.Top
@@ -174,26 +184,22 @@ private fun HeadlinesScreen(
                 }
             }
         ) {
-            if (uiState is HeadlineUiState.Loading) {
-                NewsAppDefaultProgressIndicator(placeOnCenter = true)
-            }
+            when (uiState) {
+                is HeadlineUiState.Loading -> {
+                    NewsAppDefaultProgressIndicator(placeOnCenter = true)
+                }
 
-            LazyColumn(
-                state = listState,
-                modifier = modifier,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = arrangement
-            ) {
-                when (uiState) {
-                    is HeadlineUiState.Loading -> {
+                is HeadlineUiState.Error -> {
+                    CenteredError(text = "Something went wrong.")
+                }
 
-                    }
-
-                    is HeadlineUiState.Error -> {
-                        // TODO
-                    }
-
-                    is HeadlineUiState.Success -> {
+                is HeadlineUiState.Success -> {
+                    LazyColumn(
+                        state = listState,
+                        modifier = modifier,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = arrangement
+                    ) {
                         headlines(
                             headlines = uiState.headlines,
                             onLikedChanged = onLikedChanged
@@ -315,6 +321,7 @@ internal fun Headline(
                                 .data(url)
                                 .crossfade(true)
                                 .build(),
+                            placeholder = rememberVectorPainter(image = Icons.Default.Image),
                             contentDescription = "",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -344,20 +351,27 @@ internal fun Headline(
 
 @Preview
 @Composable
-private fun HeadlinePreview() {
-    Headline(
-        article = ArticleUi(
-            id = 1,
-            author = "Simpsons",
-            title = "Inflation is super high is super high is super high is super high is super high",
-            urlToImage = "https://images.pexels.com/photos/34299/herbs-flavoring-seasoning-cooking.jpg?cs=srgb&dl=pexels-pixabay-34299.jpg&fm=jpg&w=640&h=427&_gl=1*1urd5oa*_ga*MzQ2NzQzNzA3LjE2NzU3NTcwNzU.*_ga_8JE65Q40S6*MTY3NTc1NzA3NS4xLjEuMTY3NTc1NzEwNC4wLjAuMA..",
-            url = "https://google.com",
-            publishedAt = "2023-01-02 10:21:00",
-            liked = false
-        ),
-        onLikedChanged = { _, _ -> }
+private fun HeadlinePreview(
+    @PreviewParameter(ArticlesPreviewProvider::class) article: ArticleUi
+) {
+    Headline(article = article, onLikedChanged = { _, _ -> })
+}
+
+@Preview
+@Composable
+private fun ScreenPreview(
+    @PreviewParameter(HeadlineScreenProvider::class) state: HeadlineScreenProvider.UiState
+) {
+    HeadlinesScreen(
+        uiState = state.headlineUiState,
+        searchState = state.searchState,
+        onRefresh = { },
+        onLikedChanged = { _, _ -> Boolean },
+        onQueryChange = { },
+        onNavigateToInfo = { }
     )
 }
+
 
 private fun ArticleUi.openUrl(context: Context) {
     runCatching {

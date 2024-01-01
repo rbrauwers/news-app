@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -174,30 +175,12 @@ private fun CountryCard(countryUiState: CountryUiState) {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-private fun Preview() {
+private fun Preview(
+    @PreviewParameter(SourcePreviewProvider::class) state: SourcePreviewProvider.UiState
+) {
     SourceScreen(
-        sourceUiState = SourceUiState(
-            source = NewsSource(
-                id = "",
-                name = "Source",
-                description = null,
-                url = null,
-                category = null,
-                language = null,
-                country = null
-            )
-        ),
-        countryUiState = CountryUiState.Success(
-            country = Country(
-                name = "United States",
-                capital = "Washington",
-                continent = "America",
-                statesCount = 60,
-                emoji = "\uD83C\uDDFA"
-            )
-        ),
-        //countryUiState = CountryUiState.Error,
-        //countryUiState = CountryUiState.Loading,
+        sourceUiState = state.sourceUiState,
+        countryUiState = state.countryUiState,
         modifier = Modifier.background(Color.White)
     )
 }
