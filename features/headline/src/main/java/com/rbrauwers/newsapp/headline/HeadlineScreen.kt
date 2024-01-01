@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +32,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
@@ -96,7 +98,7 @@ internal fun HeadlinesRoute(
                             count = (uiState as? HeadlineUiState.Success)?.headlines?.size
                         )
                     },
-                    actions =  {
+                    actions = {
                         InfoActionButton(onClick = onNavigateToInfo)
                     }
                 )
@@ -162,9 +164,18 @@ private fun HeadlinesScreen(
             },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Search, contentDescription = null)
+            },
+            trailingIcon = {
+                if (searchState.searching) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .width(20.dp)
+                            .aspectRatio(ratio = 1f), strokeWidth = 2.dp
+                    )
+                }
             }
         ) {
-            if (uiState is HeadlineUiState.Loading || searchState.searching) {
+            if (uiState is HeadlineUiState.Loading) {
                 NewsAppDefaultProgressIndicator(placeOnCenter = true)
             }
 
