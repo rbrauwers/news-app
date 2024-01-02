@@ -35,6 +35,8 @@ import com.rbrauwers.newsapp.headline.headlinesBaseRoute
 import com.rbrauwers.newsapp.headline.headlinesNavHost
 import com.rbrauwers.newsapp.info.infoScreen
 import com.rbrauwers.newsapp.info.navigateToInfo
+import com.rbrauwers.newsapp.settings.navigateToSettings
+import com.rbrauwers.newsapp.settings.settingsScreen
 import com.rbrauwers.newsapp.source.SourcesNavigationBarItem
 import com.rbrauwers.newsapp.source.sourcesNavHost
 import com.rbrauwers.newsapp.ui.AppState
@@ -103,18 +105,26 @@ private fun Content() {
                     headlinesNavHost(
                         onNavigateToInfo = {
                             navController.navigateToInfo()
+                        },
+                        onNavigateToSettings = {
+                            navController.navigateToSettings()
                         }
                     )
 
                     sourcesNavHost(
                         onNavigateToInfo = {
                             navController.navigateToInfo()
+                        },
+                        onNavigateToSettings = {
+                            navController.navigateToSettings()
                         }
                     )
 
                     infoScreen(
                         navController = navController
                     )
+
+                    settingsScreen(navController = navController)
                 }
             }
         }

@@ -18,13 +18,17 @@ import com.rbrauwers.newsapp.ui.NewsAppNavigationBarItem
 
 internal const val sourcesBaseRoute = "sources"
 
-fun NavGraphBuilder.sourcesNavHost(onNavigateToInfo: () -> Unit) {
+fun NavGraphBuilder.sourcesNavHost(
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit
+) {
     composable(route = sourcesBaseRoute) {
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = sourcesBaseRoute) {
             sourcesNavGraph(
                 navController = navController,
-                onNavigateToInfo = onNavigateToInfo
+                onNavigateToInfo = onNavigateToInfo,
+                onNavigateToSettings = onNavigateToSettings
             )
         }
     }
@@ -32,12 +36,14 @@ fun NavGraphBuilder.sourcesNavHost(onNavigateToInfo: () -> Unit) {
 
 private fun NavGraphBuilder.sourcesNavGraph(
     navController: NavController,
-    onNavigateToInfo: () -> Unit
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     navigation(startDestination = sourcesScreen.route, route = sourcesBaseRoute) {
         sourcesScreen(
             navController = navController,
-            onNavigateToInfo = onNavigateToInfo
+            onNavigateToInfo = onNavigateToInfo,
+            onNavigateToSettings = onNavigateToSettings
         )
 
         sourceScreen(
@@ -51,7 +57,8 @@ private fun NavGraphBuilder.sourcesNavGraph(
 private fun NavGraphBuilder.sourcesScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    onNavigateToInfo: () -> Unit
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     composable(route = sourcesScreen.route) {
         SourcesRoute(
@@ -59,7 +66,8 @@ private fun NavGraphBuilder.sourcesScreen(
             onNavigateToSource = {
                 navController.navigateToSource(source = it)
             },
-            onNavigateToInfo = onNavigateToInfo
+            onNavigateToInfo = onNavigateToInfo,
+            onNavigateToSettings = onNavigateToSettings
         )
     }
 }

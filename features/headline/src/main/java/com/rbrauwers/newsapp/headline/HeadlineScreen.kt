@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -58,8 +57,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -75,6 +72,7 @@ import com.rbrauwers.newsapp.ui.InfoActionButton
 import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.Screen
+import com.rbrauwers.newsapp.ui.SettingsActionButton
 import com.rbrauwers.newsapp.ui.TopBarState
 import kotlinx.coroutines.async
 
@@ -89,7 +87,8 @@ val headlinesScreen = Screen(
 internal fun HeadlinesRoute(
     modifier: Modifier = Modifier,
     viewModel: HeadlineViewModel = hiltViewModel(),
-    onNavigateToInfo: () -> Unit
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
     val searchState: SearchState by viewModel.searchState.collectAsStateWithLifecycle()
@@ -101,7 +100,8 @@ internal fun HeadlinesRoute(
         onRefresh = viewModel::sync,
         onLikedChanged = viewModel::updateLiked,
         onQueryChange = viewModel::onQueryChange,
-        onNavigateToInfo = onNavigateToInfo
+        onNavigateToInfo = onNavigateToInfo,
+        onNavigateToSettings = onNavigateToSettings
     )
 }
 
@@ -114,8 +114,8 @@ private fun HeadlinesScreen(
     onRefresh: suspend () -> Unit,
     onLikedChanged: (ArticleUi, Boolean) -> Unit,
     onQueryChange: (String) -> Unit,
-    onNavigateToInfo: () -> Unit
-
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     LocalAppState.current.apply {
         LaunchedEffect(uiState) {
@@ -129,6 +129,7 @@ private fun HeadlinesScreen(
                     },
                     actions = {
                         InfoActionButton(onClick = onNavigateToInfo)
+                        SettingsActionButton(onClick = onNavigateToSettings)
                     }
                 )
             )
@@ -368,7 +369,8 @@ private fun ScreenPreview(
         onRefresh = { },
         onLikedChanged = { _, _ -> Boolean },
         onQueryChange = { },
-        onNavigateToInfo = { }
+        onNavigateToInfo = { },
+        onNavigateToSettings = { }
     )
 }
 
