@@ -113,8 +113,13 @@ internal class HeadlineViewModel @Inject constructor(
 
 @Immutable
 internal sealed interface HeadlineUiState {
+    @Immutable
     data class Success(val headlines: List<ArticleUi>) : HeadlineUiState
+
+    @Immutable
     data object Error : HeadlineUiState
+
+    @Immutable
     data object Loading : HeadlineUiState
 }
 

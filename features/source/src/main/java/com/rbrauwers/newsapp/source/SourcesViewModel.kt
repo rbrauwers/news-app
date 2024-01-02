@@ -42,8 +42,13 @@ internal class SourcesViewModel @Inject constructor(
 
 @Immutable
 internal sealed interface SourcesUiState {
+    @Immutable
     data class Success(val sources: List<NewsSource>) : SourcesUiState
+
+    @Immutable
     data object Error : SourcesUiState
+
+    @Immutable
     data object Loading : SourcesUiState
 }
 
