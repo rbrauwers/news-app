@@ -68,6 +68,8 @@ dependencies {
 
     implementation(libs.profile.installer)
 
+    implementation(libs.coil.compose)
+
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:network"))

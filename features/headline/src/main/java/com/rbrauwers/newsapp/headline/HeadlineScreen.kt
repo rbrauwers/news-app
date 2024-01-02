@@ -64,7 +64,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.rbrauwers.newsapp.ui.BadgedTopBar
 import com.rbrauwers.newsapp.ui.BottomBarState
 import com.rbrauwers.newsapp.ui.CenteredError
@@ -318,10 +317,7 @@ internal fun Headline(
 
                     else -> {
                         AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(url)
-                                .crossfade(true)
-                                .build(),
+                            model = url,
                             placeholder = rememberVectorPainter(image = Icons.Default.Image),
                             contentDescription = "",
                             contentScale = ContentScale.Crop,
