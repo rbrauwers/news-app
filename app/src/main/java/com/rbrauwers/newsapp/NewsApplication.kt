@@ -1,6 +1,8 @@
 package com.rbrauwers.newsapp
 
 import android.app.Application
+import coil.ImageLoader
+import coil.ImageLoaderFactory
 import com.rbrauwers.newsapp.data.repository.HeadlineRepository
 import com.rbrauwers.newsapp.data.repository.SourceRepository
 import dagger.hilt.android.HiltAndroidApp
@@ -10,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltAndroidApp
-class NewsApplication : Application() {
+class NewsApplication : Application(), ImageLoaderFactory {
 
     @Inject
     lateinit var sourceRepository: SourceRepository
@@ -21,6 +23,12 @@ class NewsApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         sync()
+    }
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .crossfade(true)
+            .build()
     }
 
     private fun sync() {
