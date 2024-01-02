@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Divider
@@ -45,6 +46,7 @@ import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.LocalSpacing
 import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.Screen
+import com.rbrauwers.newsapp.ui.SettingsActionButton
 import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
 
@@ -60,7 +62,8 @@ internal fun SourcesRoute(
     modifier: Modifier = Modifier,
     viewModel: SourcesViewModel = hiltViewModel(),
     onNavigateToSource: (NewsSource) -> Unit,
-    onNavigateToInfo: () -> Unit
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     val uiState: SourcesUiState by viewModel.sourcesUiState.collectAsStateWithLifecycle()
 
@@ -68,7 +71,8 @@ internal fun SourcesRoute(
         uiState = uiState,
         modifier = modifier,
         onNavigateToSource = onNavigateToSource,
-        onNavigateToInfo = onNavigateToInfo
+        onNavigateToInfo = onNavigateToInfo,
+        onNavigateToSettings = onNavigateToSettings
     )
 }
 
@@ -77,7 +81,8 @@ private fun SourcesScreen(
     uiState: SourcesUiState,
     modifier: Modifier = Modifier,
     onNavigateToSource: (NewsSource) -> Unit,
-    onNavigateToInfo: () -> Unit
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     LocalAppState.current.apply {
         LaunchedEffect(uiState) {
@@ -91,6 +96,7 @@ private fun SourcesScreen(
                     },
                     actions =  {
                         InfoActionButton(onClick = onNavigateToInfo)
+                        SettingsActionButton(onClick = onNavigateToSettings)
                     }
                 )
             )
@@ -175,7 +181,7 @@ private fun LazyListScope.sources(
             Spacer(modifier = Modifier.width(LocalSpacing.current.medium))
 
             Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = "",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -192,5 +198,10 @@ private fun LazyListScope.sources(
 private fun SourcesScreenPreview(
     @PreviewParameter(SourcesPreviewProvider::class) state: SourcesUiState
 ) {
-    SourcesScreen(uiState = state, onNavigateToSource = { }, onNavigateToInfo = { })
+    SourcesScreen(
+        uiState = state,
+        onNavigateToSource = { },
+        onNavigateToInfo = { },
+        onNavigateToSettings = { }
+    )
 }
