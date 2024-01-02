@@ -142,7 +142,7 @@ private fun Article.toArticleUi(
     title = "$title",
     urlToImage = urlToImage,
     url = url,
-    publishedAt = dateConverter(publishedAt),
+    publishedAt = publishedAt,
     liked = liked,
     dateConverter = dateConverter
 )
