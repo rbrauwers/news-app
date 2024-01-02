@@ -68,6 +68,7 @@ import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.NewsDefaultTopBar
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 val settingsScreen = Screen(
@@ -106,20 +107,20 @@ internal fun SettingsRoute(
 
     SettingsScreen(
         modifier = modifier.fillMaxSize(),
+        uiState = uiState,
         onPermissionResult = viewModel::onPermissionResult,
         onDismissPermission = viewModel::dismissDialog,
-        onRemoveLikes = viewModel::onRemoveLikes,
-        uiState = uiState
+        onRemoveLikes = viewModel::onRemoveLikes
     )
 }
 
 @Composable
 private fun SettingsScreen(
     modifier: Modifier = Modifier,
+    uiState: SettingsUiState,
     onPermissionResult: (PermissionResult) -> Unit,
     onDismissPermission: () -> Unit,
-    onRemoveLikes: (List<Article>) -> Unit,
-    uiState: SettingsUiState
+    onRemoveLikes: (List<Article>) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when (uiState) {
@@ -141,8 +142,6 @@ private fun SettingsScreen(
             }
         }
     }
-
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -167,10 +166,11 @@ private fun Success(
         }
     )
 
-    val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)
     }
+
+    val coroutineScope = rememberCoroutineScope()
 
     Column(modifier = Modifier.padding(24.dp)) {
         OutlinedButton(
@@ -205,10 +205,15 @@ private fun Success(
 
     if (isSheetOpen) {
         LikedArticlesBottomSheet(
-            sheetState = sheetState,
             uiState = uiState,
+            //sheetState = sheetState,
             onDismissRequest = {
                 isSheetOpen = false
+                coroutineScope.launch {
+                    //sheetState.hide()
+                    //delay(1000)
+                    //isSheetOpen = false
+                }
             },
             onRemoveLikes = onRemoveLikes
         )
@@ -218,7 +223,6 @@ private fun Success(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun LikedArticlesBottomSheet(
-    sheetState: SheetState,
     uiState: SettingsUiState.Success,
     onDismissRequest: () -> Unit,
     onRemoveLikes: (List<Article>) -> Unit
@@ -228,6 +232,7 @@ private fun LikedArticlesBottomSheet(
     }
 
     val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     /**
      * TODO: Currently BottomSheetDefaults.windowInsets is zero.
@@ -243,8 +248,7 @@ private fun LikedArticlesBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
         modifier = Modifier
-            .heightIn(min = 300.dp)
-            .scrollable(state = rememberScrollState(), orientation = Orientation.Vertical),
+            .heightIn(min = 300.dp),
         windowInsets = customInsets
     ) {
         Text(
@@ -292,8 +296,9 @@ private fun LikedArticlesBottomSheet(
             onClick = {
                 coroutineScope.launch {
                     sheetState.hide()
+                    onDismissRequest()
+                    onRemoveLikes(selectedArticles)
                 }
-                onRemoveLikes(selectedArticles)
             },
             modifier = Modifier.padding(horizontal = 4.dp),
             enabled = selectedArticles.isNotEmpty()
