@@ -17,9 +17,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +32,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.NewsSource
@@ -48,7 +45,6 @@ import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.SettingsActionButton
 import com.rbrauwers.newsapp.ui.TopBarState
-import com.rbrauwers.newsapp.ui.newsAppDefaultProgressIndicatorItem
 
 val sourcesScreen = Screen(
     baseRoute = sourcesBaseRoute,
