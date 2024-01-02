@@ -44,8 +44,8 @@ internal class HeadlineViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     val headlineUiState: StateFlow<HeadlineUiState> =
         queryState
-            .onEach {
-                searchingState.update { true }
+            .onEach { query ->
+                searchingState.update { query.isNotBlank() }
             }
             .debounce(1000L)
             .combine(headlinesFlow) { query, headlinesState ->
