@@ -290,10 +290,10 @@ private fun LikedArticlesBottomSheet(
 
         TextButton(
             onClick = {
-                onRemoveLikes(selectedArticles)
                 coroutineScope.launch {
                     sheetState.hide()
                 }
+                onRemoveLikes(selectedArticles)
             },
             modifier = Modifier.padding(horizontal = 4.dp),
             enabled = selectedArticles.isNotEmpty()

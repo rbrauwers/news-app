@@ -59,4 +59,10 @@ internal class SyncedHeadlineRepository @Inject constructor(
         }
     }
 
+    override suspend fun updateLikes(likes: Map<Int, Boolean>) {
+        withContext(Dispatchers.IO) {
+            dao.updateLikes(likes = likes)
+        }
+    }
+
 }

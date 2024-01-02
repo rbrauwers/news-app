@@ -11,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -59,9 +58,11 @@ internal class SettingsViewModel @Inject constructor(
 
     fun onRemoveLikes(articles: List<Article>) {
         viewModelScope.launch {
-            articles.forEach { article ->
-                headlineRepository.updateLiked(id = article.id, liked = false)
+            val map = articles.associate {
+                Pair(it.id, false)
             }
+
+            headlineRepository.updateLikes(map)
         }
     }
 
