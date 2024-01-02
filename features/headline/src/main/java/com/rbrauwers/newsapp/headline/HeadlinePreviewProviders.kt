@@ -1,6 +1,7 @@
 package com.rbrauwers.newsapp.headline
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.rbrauwers.newsapp.common.converters.ConvertStringToDateTimeInstance
 
 internal class ArticlesPreviewProvider : PreviewParameterProvider<ArticleUi> {
 
@@ -13,7 +14,8 @@ internal class ArticlesPreviewProvider : PreviewParameterProvider<ArticleUi> {
                 urlToImage = "https://dims.apnews.com/dims4/default/8a34746/2147483647/strip/true/crop/1975x1111+12+0/resize/1440x810!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F57%2F70%2Fabd46beef37a9ee73c6edfac6409%2F32fee9a15ef74bf7b3c1bea5435f5d42",
                 url = "https://google.com",
                 publishedAt = "2023-01-02 10:21:00",
-                liked = false
+                liked = false,
+                dateConverter = ConvertStringToDateTimeInstance()
             ),
             ArticleUi(
                 id = 2,
@@ -22,7 +24,8 @@ internal class ArticlesPreviewProvider : PreviewParameterProvider<ArticleUi> {
                 urlToImage = "https://dims.apnews.com/dims4/default/8a34746/2147483647/strip/true/crop/1975x1111+12+0/resize/1440x810!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F57%2F70%2Fabd46beef37a9ee73c6edfac6409%2F32fee9a15ef74bf7b3c1bea5435f5d42",
                 url = "https://google.com",
                 publishedAt = "2023-01-02 08:21:00",
-                liked = false
+                liked = false,
+                dateConverter = ConvertStringToDateTimeInstance()
             )
         )
     }

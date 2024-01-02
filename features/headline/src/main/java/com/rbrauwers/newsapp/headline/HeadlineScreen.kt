@@ -287,7 +287,7 @@ internal fun Headline(
                     modifier = Modifier.padding(vertical = 12.dp)
                 )
 
-                article.publishedAt?.let { date ->
+                article.formattedPublishedAt?.let { date ->
                     Text(
                         text = date,
                         style = MaterialTheme.typography.bodySmall,

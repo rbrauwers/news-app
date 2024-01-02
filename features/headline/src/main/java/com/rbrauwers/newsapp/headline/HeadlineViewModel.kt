@@ -26,8 +26,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.system.measureTimeMillis
 
-private var globalCounter = 0
-
 @HiltViewModel
 internal class HeadlineViewModel @Inject constructor(
     private val headlineRepository: HeadlineRepository
@@ -89,8 +87,6 @@ internal class HeadlineViewModel @Inject constructor(
         )
 
     suspend fun sync() {
-        globalCounter++
-
         val millis = measureTimeMillis {
             headlineRepository.sync()
         }
@@ -143,11 +139,12 @@ private fun Article.toArticleUi(
 ) = ArticleUi(
     id = id,
     author = if (author.isNullOrBlank()) "Author: N/A" else author,
-    title = "$globalCounter - $title",
+    title = "$title",
     urlToImage = urlToImage,
     url = url,
     publishedAt = dateConverter(publishedAt),
-    liked = liked
+    liked = liked,
+    dateConverter = dateConverter
 )
 
 @Immutable
@@ -158,8 +155,13 @@ internal data class ArticleUi(
     val urlToImage: String?,
     val url: String?,
     val publishedAt: String?,
-    val liked: Boolean
+    val liked: Boolean,
+    val dateConverter: ConvertStringToDateTimeInstance
 ) {
+    val formattedPublishedAt: String? by lazy {
+        dateConverter(publishedAt)
+    }
+
     fun matches(query: String?): Boolean {
         query ?: return true
         return author.orEmpty().contains(query, ignoreCase = true) ||
