@@ -1,5 +1,6 @@
 plugins {
     id("com.rbrauwers.newapp.library.plugin")
+    id("com.rbrauwers.newapp.hilt.plugin")
 }
 
 android {
@@ -7,4 +8,5 @@ android {
 }
 
 dependencies {
+    implementation(libs.biometric)
 }

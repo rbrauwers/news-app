@@ -66,9 +66,8 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
 
-    implementation(libs.profile.installer)
-
     implementation(libs.coil.compose)
+    implementation(libs.profile.installer)
 
     implementation(project(":core:common"))
     implementation(project(":core:data"))

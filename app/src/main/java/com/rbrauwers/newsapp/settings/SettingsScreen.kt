@@ -4,8 +4,6 @@ import android.Manifest
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomSheetDefaults
@@ -30,9 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -52,11 +47,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.R
+import com.rbrauwers.newsapp.common.BiometricAuthenticator
 import com.rbrauwers.newsapp.common.findActivity
 import com.rbrauwers.newsapp.common.openAppSettings
 import com.rbrauwers.newsapp.model.Article
@@ -68,7 +64,10 @@ import com.rbrauwers.newsapp.ui.NewsAppDefaultProgressIndicator
 import com.rbrauwers.newsapp.ui.NewsDefaultTopBar
 import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.TopBarState
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 val settingsScreen = Screen(
@@ -110,7 +109,9 @@ internal fun SettingsRoute(
         uiState = uiState,
         onPermissionResult = viewModel::onPermissionResult,
         onDismissPermission = viewModel::dismissDialog,
-        onRemoveLikes = viewModel::onRemoveLikes
+        onRemoveLikes = viewModel::onRemoveLikes,
+        onAuthenticationResult = viewModel::onAuthenticationResult,
+        biometricAuthenticator = viewModel.biometricAuthenticator
     )
 }
 
@@ -120,7 +121,9 @@ private fun SettingsScreen(
     uiState: SettingsUiState,
     onPermissionResult: (PermissionResult) -> Unit,
     onDismissPermission: () -> Unit,
-    onRemoveLikes: (List<Article>) -> Unit
+    onRemoveLikes: (List<Article>) -> Unit,
+    onAuthenticationResult: (BiometricAuthenticator.BiometricStatus) -> Unit,
+    biometricAuthenticator: BiometricAuthenticator
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when (uiState) {
@@ -137,20 +140,23 @@ private fun SettingsScreen(
                     uiState = uiState,
                     onPermissionResult = onPermissionResult,
                     onDismissPermission = onDismissPermission,
-                    onRemoveLikes = onRemoveLikes
+                    onRemoveLikes = onRemoveLikes,
+                    biometricAuthenticator = biometricAuthenticator,
+                    onAuthenticationResult = onAuthenticationResult
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Success(
     uiState: SettingsUiState.Success,
     onPermissionResult: (PermissionResult) -> Unit,
     onDismissPermission: () -> Unit,
-    onRemoveLikes: (List<Article>) -> Unit
+    onRemoveLikes: (List<Article>) -> Unit,
+    onAuthenticationResult: (BiometricAuthenticator.BiometricStatus) -> Unit,
+    biometricAuthenticator: BiometricAuthenticator
 ) {
     val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -170,8 +176,6 @@ private fun Success(
         mutableStateOf(false)
     }
 
-    val coroutineScope = rememberCoroutineScope()
-
     Column(modifier = Modifier.padding(24.dp)) {
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
@@ -181,6 +185,13 @@ private fun Success(
         ) {
             Text("Grant permissions")
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        BiometricAuthentication(
+            uiState = uiState,
+            biometricAuthenticator = biometricAuthenticator,
+            onAuthenticationResult = onAuthenticationResult)
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 20.dp))
 
@@ -206,17 +217,55 @@ private fun Success(
     if (isSheetOpen) {
         LikedArticlesBottomSheet(
             uiState = uiState,
-            //sheetState = sheetState,
             onDismissRequest = {
                 isSheetOpen = false
-                coroutineScope.launch {
-                    //sheetState.hide()
-                    //delay(1000)
-                    //isSheetOpen = false
-                }
             },
             onRemoveLikes = onRemoveLikes
         )
+    }
+}
+
+@Composable
+private fun BiometricAuthentication(
+    uiState: SettingsUiState.Success,
+    biometricAuthenticator: BiometricAuthenticator,
+    onAuthenticationResult: (BiometricAuthenticator.BiometricStatus) -> Unit
+) {
+    val activity = LocalContext.current.findActivity() as FragmentActivity
+    val coroutineScope = rememberCoroutineScope()
+
+    when (val biometricStatus = uiState.biometricStatus) {
+        BiometricAuthenticator.BiometricStatus.NotRequested -> {
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    coroutineScope.launch {
+                        biometricAuthenticator.authenticate(activity = activity)
+                            .onEach { result ->
+                                onAuthenticationResult(result)
+                            }.collect()
+                    }
+                }
+            ) {
+                Text("Access sensitive data")
+            }
+        }
+
+        BiometricAuthenticator.BiometricStatus.NotAvailable -> {
+            Text(text = "Biometrics not available")
+        }
+
+        BiometricAuthenticator.BiometricStatus.Failure -> {
+            Text(text = "Authentication failed")
+        }
+
+        is BiometricAuthenticator.BiometricStatus.Error -> {
+            Text(text = "Biometrics error: ${biometricStatus.error}")
+        }
+
+        BiometricAuthenticator.BiometricStatus.Success -> {
+            Text(text = "Authenticated")
+        }
     }
 }
 
@@ -366,6 +415,16 @@ private fun ScreenPreview() {
         onPermissionResult = { },
         uiState = SettingsUiState.Success(likesCount = "4"),
         onDismissPermission = { },
-        onRemoveLikes = { }
+        onRemoveLikes = { },
+        onAuthenticationResult = { },
+        biometricAuthenticator = object : BiometricAuthenticator {
+            override fun authenticate(
+                activity: FragmentActivity,
+                title: String,
+                subtitle: String
+            ): Flow<BiometricAuthenticator.BiometricStatus> {
+                return flowOf(BiometricAuthenticator.BiometricStatus.NotRequested)
+            }
+        }
     )
 }
