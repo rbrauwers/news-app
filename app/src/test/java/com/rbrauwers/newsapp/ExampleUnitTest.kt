@@ -1,5 +1,6 @@
 package com.rbrauwers.newsapp
 
+import androidx.compose.ui.util.fastReduce
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -35,6 +36,12 @@ class ExampleUnitTest {
         return d
     }
 
+    /**
+     * a executed
+     * b executed
+     * Total time: 1500
+     * Done
+     */
     @Test
     fun c() = runTest {
         val t = measureTimeMillis {
@@ -46,6 +53,12 @@ class ExampleUnitTest {
         println("Done")
     }
 
+    /**
+     * b executed
+     * a executed
+     * Total time: 1500
+     * Done
+     */
     @Test
     fun d() = runTest {
         val t = measureTimeMillis {
@@ -106,6 +119,19 @@ class ExampleUnitTest {
         val strings = uniqueStrings(items)
     }
 
+    @Test
+    fun associatedValuesTest() {
+        val result = associatedValues(items = listOf(
+            Pair("a", 1),
+            Pair("b", 2),
+            Pair("a", 100),
+            Pair("b", 200),
+            Pair("a", 10),
+            Pair("b", 20),
+        ))
+        println("Assciated values: $result")
+    }
+
     fun associatedValues(items: List<Pair<String, Int>>) : Map<String, List<Int>> {
         return items
             .groupBy { it.first }
@@ -116,7 +142,34 @@ class ExampleUnitTest {
 
     @Test
     fun g() {
-        val items = listOf<Pair<String, Int>>(Pair("a", 1), Pair("a", 2), Pair("a", 2), Pair("b", 3))
+        val list = listOf("a", "b", "c", "a")
+        val reduce = list.reduce { acc, s -> "$acc+$s"}
+        println("Reduce: $reduce")
+
+        val numbers = listOf(1, 100, 200, 300)
+        val index = numbers.binarySearch {
+            when {
+                it == 200 -> 0
+                it < 200 -> -1
+                else -> 1
+            }
+        }
+
+        println("Binary search index: $index")
+
+        val dropLast = numbers.dropLast(2)
+        val dropLastWhile = numbers.dropLastWhile { it > 100 }
+        println("Drop last: $dropLast $numbers")
+        println("Drop last while: $dropLastWhile $numbers")
+
+        val partition = numbers.partition { it <= 100 }
+        println("Partition: $partition")
+
+        val windows = numbers.windowed(size = 2)
+        println("Windows: $windows")
+
+        val slice = numbers.slice(0..2)
+        println("Slice: $slice")
     }
 
     fun encodeString(input: String): String {
