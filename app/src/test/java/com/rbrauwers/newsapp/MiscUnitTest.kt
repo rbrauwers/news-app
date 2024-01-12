@@ -14,11 +14,11 @@ class MiscUnitTest {
     private fun sortPackages(packages: MutableMap<String, List<String>>): List<String> {
         val sortedPackages = mutableListOf<String>()
         val size = packages.size
-        val iterator = packages.iterator()
 
         for (i in 0..<size) {
             println("Iteraction $i")
 
+            val iterator = packages.iterator()
             iterator.forEach { item ->
                 val canAdd = canAdd(
                     pack = item.toPair(),
