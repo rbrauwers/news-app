@@ -46,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -74,6 +75,7 @@ import com.rbrauwers.newsapp.ui.Screen
 import com.rbrauwers.newsapp.ui.SettingsActionButton
 import com.rbrauwers.newsapp.ui.TopBarState
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 val headlinesScreen = Screen(
     baseRoute = headlinesBaseRoute,
@@ -138,6 +140,8 @@ private fun HeadlinesScreen(
     }
 
     val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
     val arrangement = remember {
         if (uiState is HeadlineUiState.Success) Arrangement.Center else Arrangement.Top
     }
@@ -204,6 +208,14 @@ private fun HeadlinesScreen(
                             headlines = uiState.headlines,
                             onLikedChanged = onLikedChanged
                         )
+                    }
+
+
+
+                    if (searchState.query.isNullOrBlank() && searchState.wasQuerying) {
+                        coroutineScope.launch {
+                            listState.scrollToItem(0)
+                        }
                     }
                 }
             }

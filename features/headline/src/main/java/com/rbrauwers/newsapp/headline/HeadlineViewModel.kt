@@ -33,6 +33,7 @@ internal class HeadlineViewModel @Inject constructor(
 
     private val queryState = MutableStateFlow("")
     private val searchingState = MutableStateFlow(false)
+    private var wasSearching = false
 
     private val headlinesFlow = headlineRepository
         .getHeadlines()
@@ -77,6 +78,7 @@ internal class HeadlineViewModel @Inject constructor(
             SearchState(
                 query = query,
                 searching = searching,
+                wasQuerying = wasSearching,
                 enabled = headlinesState is HeadlineUiState.Success
             )
         }
@@ -100,6 +102,7 @@ internal class HeadlineViewModel @Inject constructor(
     }
 
     fun onQueryChange(query: String) {
+        wasSearching = queryState.value.isNotBlank()
         queryState.update {
             query
         }
@@ -173,5 +176,6 @@ internal data class ArticleUi(
 internal data class SearchState(
     val query: String? = null,
     val searching: Boolean = false,
+    val wasQuerying: Boolean = false,
     val enabled: Boolean = false
 )
