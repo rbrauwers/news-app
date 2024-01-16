@@ -46,6 +46,7 @@ private data class Lib(
 )
 
 private val libs = listOf(
+    Lib(name = "Apollo", url = "https://www.apollographql.com/developers/collection/graphql-for-android"),
     Lib(name = "Chucker", url = "https://github.com/ChuckerTeam/chucker"),
     Lib(name = "Coil", url = "https://coil-kt.github.io/coil/"),
     Lib(name = "Jetpack Compose", url = "https://developer.android.com/jetpack/compose"),
