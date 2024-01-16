@@ -1,9 +1,9 @@
 # News app (Android)
 
 Android application that displays news and its sources.<br>
-The implementation follows [app architecture](https://developer.android.com/topic/architecture) principles, such as modularization, dependency injection, single source of truth, etc.<br><br>
+The implementation follows [app architecture](https://developer.android.com/topic/architecture) principles, such as modularization, dependency injection, single source of truth, etc.<br><be>
 
-<img src="https://github.com/rbrauwers/news-app/blob/main/screenshots/headlines.png" alt="News app" width="300"/>
+https://github.com/rbrauwers/news-app/assets/3301123/c814345e-90ad-4571-a9b1-40abd060aee9
 
 ## How it works
 Data is fetched from the [News API](https://newsapi.org/), stored locally, and observed by UI.
