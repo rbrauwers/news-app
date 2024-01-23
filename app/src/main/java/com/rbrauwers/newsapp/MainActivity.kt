@@ -34,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import com.rbrauwers.newsapp.headline.HeadlinesNavigationBarItem
 import com.rbrauwers.newsapp.headline.headlinesBaseRoute
 import com.rbrauwers.newsapp.headline.headlinesNavHost
+import com.rbrauwers.newsapp.headline.pagedHeadlinesNavHost
 import com.rbrauwers.newsapp.info.infoScreen
 import com.rbrauwers.newsapp.info.navigateToInfo
 import com.rbrauwers.newsapp.settings.navigateToSettings
@@ -45,6 +46,13 @@ import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.TopBarState
 import com.rbrauwers.newsapp.ui.theme.NewsAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+
+private enum class HeadlinesMode {
+    Default,
+    Paged
+}
+
+private val headlinesMode = HeadlinesMode.Paged
 
 /**
  * FragmentActivity is used over ComponentActivity because it is required by BiometricPrompt.
@@ -107,14 +115,29 @@ private fun Content() {
                     startDestination = headlinesBaseRoute,
                     modifier = Modifier.padding(innerPadding)
                 ) {
-                    headlinesNavHost(
-                        onNavigateToInfo = {
-                            navController.navigateToInfo()
-                        },
-                        onNavigateToSettings = {
-                            navController.navigateToSettings()
+                    when (headlinesMode) {
+                        HeadlinesMode.Paged -> {
+                            pagedHeadlinesNavHost(
+                                onNavigateToInfo = {
+                                    navController.navigateToInfo()
+                                },
+                                onNavigateToSettings = {
+                                    navController.navigateToSettings()
+                                }
+                            )
                         }
-                    )
+
+                        HeadlinesMode.Default -> {
+                            headlinesNavHost(
+                                onNavigateToInfo = {
+                                    navController.navigateToInfo()
+                                },
+                                onNavigateToSettings = {
+                                    navController.navigateToSettings()
+                                }
+                            )
+                        }
+                    }
 
                     sourcesNavHost(
                         onNavigateToInfo = {

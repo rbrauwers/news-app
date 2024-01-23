@@ -2,6 +2,7 @@ package com.rbrauwers.newsapp.database.di
 
 import android.content.Context
 import androidx.room.Room
+import com.rbrauwers.newsapp.database.DefaultNewsDatabase
 import com.rbrauwers.newsapp.database.NewsDatabase
 import dagger.Module
 import dagger.Provides
@@ -20,7 +21,7 @@ internal object DatabaseModule {
         @ApplicationContext context: Context,
     ): NewsDatabase = Room.databaseBuilder(
         context,
-        NewsDatabase::class.java,
+        DefaultNewsDatabase::class.java,
         "news-database",
     ).build()
 

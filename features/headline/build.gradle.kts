@@ -14,8 +14,13 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.constraintlayout.compose)
 
+    implementation(libs.paging.compose)
+    implementation(libs.paging.runtime)
+
     implementation(project(":core:common"))
     implementation(project(":core:data"))
+    // TODO: check if we can figure out other solution (required due Pager)
+    implementation(project(":core:database"))
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
 }

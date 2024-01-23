@@ -29,12 +29,39 @@ fun NavGraphBuilder.headlinesNavHost(
     }
 }
 
+fun NavGraphBuilder.pagedHeadlinesNavHost(
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit
+) {
+    composable(route = headlinesBaseRoute) {
+        NavHost(navController = rememberNavController(), startDestination = headlinesBaseRoute) {
+            pagedHeadlinesNavGraph(
+                onNavigateToInfo = onNavigateToInfo,
+                onNavigateToSettings = onNavigateToSettings
+            )
+        }
+    }
+}
+
 private fun NavGraphBuilder.headlinesNavGraph(
     onNavigateToInfo: () -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
     navigation(startDestination = headlinesScreen.route, route = headlinesBaseRoute) {
         headlinesScreen(
+            onNavigateToInfo = onNavigateToInfo,
+            onNavigateToSettings = onNavigateToSettings
+        )
+    }
+}
+
+
+private fun NavGraphBuilder.pagedHeadlinesNavGraph(
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit
+) {
+    navigation(startDestination = pagedHeadlinesScreen.route, route = headlinesBaseRoute) {
+        pagedHeadlinesScreen(
             onNavigateToInfo = onNavigateToInfo,
             onNavigateToSettings = onNavigateToSettings
         )
@@ -59,13 +86,27 @@ private fun NavGraphBuilder.headlinesScreen(
     }
 }
 
+private fun NavGraphBuilder.pagedHeadlinesScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToInfo: () -> Unit,
+    onNavigateToSettings: () -> Unit
+) {
+    composable(route = pagedHeadlinesScreen.route) {
+        PagedHeadlinesRoute(
+            modifier = modifier,
+            onNavigateToInfo = onNavigateToInfo,
+            onNavigateToSettings = onNavigateToSettings
+        )
+    }
+}
+
 @Composable
 fun RowScope.HeadlinesNavigationBarItem(
     navController: NavController,
     currentDestination: NavDestination?
 ) {
     NewsAppNavigationBarItem(
-        screen = headlinesScreen,
+        screen = pagedHeadlinesScreen,
         navController = navController,
         currentDestination = currentDestination
     )
