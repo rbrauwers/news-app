@@ -30,7 +30,7 @@ internal class SyncedHeadlineRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             runCatching {
                 val response = networkDataSource
-                    .getHeadlines()
+                    .getHeadlines(page = 1, pageSize = 50)
 
                 val duplicates = response.articles.groupBy { it.id }.count { it.value.size > 1 }
                 println("DUPLICATES! $duplicates")

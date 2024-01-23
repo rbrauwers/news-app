@@ -1,5 +1,6 @@
 package com.rbrauwers.newsapp.database.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
@@ -8,8 +9,18 @@ import com.rbrauwers.newsapp.database.model.ArticleEntity
 import com.rbrauwers.newsapp.database.model.ArticleEntityUpsertWrapper
 import kotlinx.coroutines.flow.Flow
 
+interface HeadlineDao {
+    fun getHeadlines(): Flow<List<ArticleEntity>>
+    fun pagingSource(): PagingSource<Int, ArticleEntity>
+    suspend fun updateLiked(id: Int, liked: Boolean)
+    suspend fun updateLikes(likes: Map<Int, Boolean>)
+    suspend fun upsertHeadlines(headlines: List<ArticleEntity>)
+    suspend fun clear()
+    suspend fun clearAndInsert(articles: List<ArticleEntity>)
+}
+
 @Dao
-abstract class HeadlineDao {
+internal abstract class DefaultHeadlineDao : HeadlineDao {
 
     @Query(
         value = """
@@ -17,7 +28,15 @@ abstract class HeadlineDao {
             ORDER BY published_at DESC
         """
     )
-    abstract fun getHeadlines(): Flow<List<ArticleEntity>>
+    abstract override fun getHeadlines(): Flow<List<ArticleEntity>>
+
+    @Query(
+        value = """
+            SELECT * FROM articles
+            ORDER BY published_at DESC
+        """
+    )
+    abstract override fun pagingSource(): PagingSource<Int, ArticleEntity>
 
     @Query(
         value = """
@@ -25,17 +44,26 @@ abstract class HeadlineDao {
             SET liked = :liked 
             WHERE id = :id
         """)
-    abstract suspend fun updateLiked(id: Int, liked: Boolean)
+    abstract override suspend fun updateLiked(id: Int, liked: Boolean)
 
     @Transaction
-    open suspend fun updateLikes(likes: Map<Int, Boolean>) {
+    open override suspend fun updateLikes(likes: Map<Int, Boolean>) {
         likes.forEach {
             updateLiked(id = it.key, liked = it.value)
         }
     }
 
-    suspend fun upsertHeadlines(headlines: List<ArticleEntity>) {
+    override suspend fun upsertHeadlines(headlines: List<ArticleEntity>) {
         upsertHeadlines(headlines.map { ArticleEntityUpsertWrapper(it) })
+    }
+
+    @Query("DELETE FROM articles")
+    abstract override suspend fun clear()
+
+    @Transaction
+    override suspend fun clearAndInsert(articles: List<ArticleEntity>) {
+        clear()
+        upsertHeadlines(headlines = articles)
     }
 
     @Upsert(entity = ArticleEntity::class)

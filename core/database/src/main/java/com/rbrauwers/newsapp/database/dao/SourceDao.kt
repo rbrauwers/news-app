@@ -6,16 +6,22 @@ import androidx.room.Upsert
 import com.rbrauwers.newsapp.database.model.NewsSourceEntity
 import kotlinx.coroutines.flow.Flow
 
-@Dao
 interface SourceDao {
+    fun getSources(): Flow<List<NewsSourceEntity>>
+    fun getSource(id: String): Flow<NewsSourceEntity?>
+    suspend fun upsertSources(sources: List<NewsSourceEntity>)
+}
+
+@Dao
+internal interface DefaultSourceDao : SourceDao {
 
     @Query("SELECT * FROM news_sources")
-    fun getSources(): Flow<List<NewsSourceEntity>>
+    override fun getSources(): Flow<List<NewsSourceEntity>>
 
     @Query("SELECT * FROM news_sources WHERE id = :id")
-    fun getSource(id: String): Flow<NewsSourceEntity?>
+    override fun getSource(id: String): Flow<NewsSourceEntity?>
 
     @Upsert
-    suspend fun upsertSources(sources: List<NewsSourceEntity>)
+    override suspend fun upsertSources(sources: List<NewsSourceEntity>)
 
 }

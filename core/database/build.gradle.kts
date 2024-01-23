@@ -12,8 +12,11 @@ android {
 dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room)
+    implementation(libs.room.paging)
     annotationProcessor(libs.room.compiler)
     kapt(libs.room.compiler)
+
+    implementation(libs.paging.runtime)
 
     implementation(project(":core:model"))
 }

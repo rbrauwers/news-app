@@ -6,7 +6,6 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.rbrauwers.newsapp.model.HeadlinesResponse
 import com.rbrauwers.newsapp.model.SourcesResponse
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -15,7 +14,6 @@ import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@OptIn(ExperimentalSerializationApi::class)
 @Singleton
 internal class RetrofitClient @Inject constructor(
     @ApplicationContext context: Context,
@@ -58,8 +56,12 @@ internal class RetrofitClient @Inject constructor(
         return api.getSources()
     }
 
-    override suspend fun getHeadlines(country: String): HeadlinesResponse {
-        return api.getHeadlines(country)
+    override suspend fun getHeadlines(
+        country: String,
+        pageSize: Int,
+        page: Int
+    ): HeadlinesResponse {
+        return api.getHeadlines(country = country, pageSize = pageSize, page = page)
     }
 
 }

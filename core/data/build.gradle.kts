@@ -12,6 +12,8 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:model"))
     implementation(project(":core:network"))
+
+    implementation(libs.paging.runtime)
 }
 
 kapt {

@@ -37,6 +37,10 @@ internal class ArticlesPreviewProvider : PreviewParameterProvider<ArticleUi> {
 
 }
 
+internal class ArticleListPreviewProvider : PreviewParameterProvider<List<ArticleUi>> {
+    override val values = sequenceOf(ArticlesPreviewProvider.articles.toList())
+}
+
 internal class HeadlineScreenProvider : PreviewParameterProvider<HeadlineScreenProvider.UiState> {
 
     data class UiState(

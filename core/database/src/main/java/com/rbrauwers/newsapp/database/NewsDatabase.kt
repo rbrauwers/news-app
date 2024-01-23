@@ -3,25 +3,35 @@ package com.rbrauwers.newsapp.database
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.withTransaction
+import com.rbrauwers.newsapp.database.dao.DefaultHeadlineDao
+import com.rbrauwers.newsapp.database.dao.DefaultSourceDao
 import com.rbrauwers.newsapp.database.dao.HeadlineDao
 import com.rbrauwers.newsapp.database.dao.SourceDao
 import com.rbrauwers.newsapp.database.model.ArticleEntity
 import com.rbrauwers.newsapp.database.model.NewsSourceEntity
+
+interface NewsDatabase {
+    fun headlineDao(): HeadlineDao
+    fun sourceDao(): SourceDao
+    suspend fun <R> runWithTransaction(block: suspend () -> R)
+}
 
 @Database(
     entities = [
         ArticleEntity::class,
         NewsSourceEntity::class
     ],
-    version = 2,
+    version = 3,
     autoMigrations = [
-        AutoMigration(from = 1, to = 2)
+        AutoMigration(from = 2, to = 3)
     ]
 )
-abstract class NewsDatabase : RoomDatabase() {
+internal abstract class DefaultNewsDatabase : RoomDatabase(), NewsDatabase {
+    abstract override fun headlineDao(): DefaultHeadlineDao
+    abstract override fun sourceDao(): DefaultSourceDao
 
-    abstract fun headlineDao(): HeadlineDao
-
-    abstract fun sourceDao(): SourceDao
-
+    override suspend fun <R> runWithTransaction(block: suspend () -> R) {
+        withTransaction(block)
+    }
 }
