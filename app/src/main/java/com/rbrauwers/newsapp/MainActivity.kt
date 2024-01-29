@@ -52,7 +52,7 @@ private enum class HeadlinesMode {
     Paged
 }
 
-private val headlinesMode = HeadlinesMode.Paged
+private val headlinesMode = HeadlinesMode.Default
 
 /**
  * FragmentActivity is used over ComponentActivity because it is required by BiometricPrompt.
