@@ -64,6 +64,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.rbrauwers.newsapp.ui.AuthActionButton
 import com.rbrauwers.newsapp.ui.BadgedTopBar
 import com.rbrauwers.newsapp.ui.BottomBarState
 import com.rbrauwers.newsapp.ui.CenteredError
@@ -87,7 +88,8 @@ internal fun HeadlinesRoute(
     modifier: Modifier = Modifier,
     viewModel: HeadlineViewModel = hiltViewModel(),
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToAuth: () -> Unit
 ) {
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
     val searchState: SearchState by viewModel.searchState.collectAsStateWithLifecycle()
@@ -100,7 +102,8 @@ internal fun HeadlinesRoute(
         onLikedChanged = viewModel::updateLiked,
         onQueryChange = viewModel::onQueryChange,
         onNavigateToInfo = onNavigateToInfo,
-        onNavigateToSettings = onNavigateToSettings
+        onNavigateToSettings = onNavigateToSettings,
+        onNavigateToAuth = onNavigateToAuth
     )
 }
 
@@ -114,7 +117,8 @@ private fun HeadlinesScreen(
     onLikedChanged: (ArticleUi, Boolean) -> Unit,
     onQueryChange: (String) -> Unit,
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToAuth: () -> Unit
 ) {
     LocalAppState.current.apply {
         LaunchedEffect(uiState) {
@@ -129,6 +133,7 @@ private fun HeadlinesScreen(
                     actions = {
                         InfoActionButton(onClick = onNavigateToInfo)
                         SettingsActionButton(onClick = onNavigateToSettings)
+                        AuthActionButton(onClick = onNavigateToAuth)
                     }
                 )
             )
@@ -372,7 +377,8 @@ private fun ScreenPreview(
         onLikedChanged = { _, _ -> Boolean },
         onQueryChange = { },
         onNavigateToInfo = { },
-        onNavigateToSettings = { }
+        onNavigateToSettings = { },
+        onNavigateToAuth = { }
     )
 }
 

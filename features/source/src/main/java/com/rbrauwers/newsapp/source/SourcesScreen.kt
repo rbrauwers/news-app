@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.NewsSource
+import com.rbrauwers.newsapp.ui.AuthActionButton
 import com.rbrauwers.newsapp.ui.BadgedTopBar
 import com.rbrauwers.newsapp.ui.BottomBarState
 import com.rbrauwers.newsapp.ui.CenteredError
@@ -59,7 +60,8 @@ internal fun SourcesRoute(
     viewModel: SourcesViewModel = hiltViewModel(),
     onNavigateToSource: (NewsSource) -> Unit,
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToAuth: () -> Unit
 ) {
     val uiState: SourcesUiState by viewModel.sourcesUiState.collectAsStateWithLifecycle()
 
@@ -68,7 +70,8 @@ internal fun SourcesRoute(
         modifier = modifier,
         onNavigateToSource = onNavigateToSource,
         onNavigateToInfo = onNavigateToInfo,
-        onNavigateToSettings = onNavigateToSettings
+        onNavigateToSettings = onNavigateToSettings,
+        onNavigateToAuth = onNavigateToAuth
     )
 }
 
@@ -78,7 +81,8 @@ private fun SourcesScreen(
     modifier: Modifier = Modifier,
     onNavigateToSource: (NewsSource) -> Unit,
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToAuth: () -> Unit
 ) {
     LocalAppState.current.apply {
         LaunchedEffect(uiState) {
@@ -93,6 +97,7 @@ private fun SourcesScreen(
                     actions =  {
                         InfoActionButton(onClick = onNavigateToInfo)
                         SettingsActionButton(onClick = onNavigateToSettings)
+                        AuthActionButton(onClick = onNavigateToAuth)
                     }
                 )
             )
@@ -198,6 +203,7 @@ private fun SourcesScreenPreview(
         uiState = state,
         onNavigateToSource = { },
         onNavigateToInfo = { },
-        onNavigateToSettings = { }
+        onNavigateToSettings = { },
+        onNavigateToAuth = { }
     )
 }

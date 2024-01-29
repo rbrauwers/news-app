@@ -2,6 +2,7 @@ package com.rbrauwers.newsapp.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
@@ -39,6 +40,16 @@ fun SettingsActionButton(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
         Icon(
             imageVector = Icons.Outlined.Settings,
+            contentDescription = null
+        )
+    }
+}
+
+@Composable
+fun AuthActionButton(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(
+            imageVector = Icons.Outlined.AccountCircle,
             contentDescription = null
         )
     }

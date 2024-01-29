@@ -3,7 +3,6 @@
 package com.rbrauwers.newsapp
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.slideInVertically
@@ -31,9 +30,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.rbrauwers.newsapp.authentication.authNavHost
+import com.rbrauwers.newsapp.authentication.emailScreen
+import com.rbrauwers.newsapp.authentication.navigateToAuth
 import com.rbrauwers.newsapp.headline.HeadlinesNavigationBarItem
 import com.rbrauwers.newsapp.headline.headlinesBaseRoute
 import com.rbrauwers.newsapp.headline.headlinesNavHost
+import com.rbrauwers.newsapp.headline.headlinesScreen
 import com.rbrauwers.newsapp.headline.pagedHeadlinesNavHost
 import com.rbrauwers.newsapp.info.infoScreen
 import com.rbrauwers.newsapp.info.navigateToInfo
@@ -123,6 +126,9 @@ private fun Content() {
                                 },
                                 onNavigateToSettings = {
                                     navController.navigateToSettings()
+                                },
+                                onNavigateToAuth = {
+                                    navController.navigateToAuth()
                                 }
                             )
                         }
@@ -134,6 +140,9 @@ private fun Content() {
                                 },
                                 onNavigateToSettings = {
                                     navController.navigateToSettings()
+                                },
+                                onNavigateToAuth = {
+                                    navController.navigateToAuth()
                                 }
                             )
                         }
@@ -145,18 +154,23 @@ private fun Content() {
                         },
                         onNavigateToSettings = {
                             navController.navigateToSettings()
+                        },
+                        onNavigateToAuth = {
+                            navController.navigateToAuth()
                         }
                     )
 
-                    infoScreen(
-                        navController = navController
-                    )
-
+                    authNavHost(onNavigateToHome = navController::navigateToHome)
+                    infoScreen(navController = navController)
                     settingsScreen(navController = navController)
                 }
             }
         }
     }
+}
+
+private fun NavController.navigateToHome() {
+    popBackStack(route = headlinesBaseRoute, inclusive = false)
 }
 
 @Composable
