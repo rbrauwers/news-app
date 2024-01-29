@@ -1,10 +1,15 @@
 package com.rbrauwers.newsapp
 
 import androidx.compose.ui.util.fastReduce
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -249,6 +254,62 @@ class ExampleUnitTest {
             }
         }
 
+    }
+
+    val longFlow = MutableStateFlow("")
+
+    /**
+     * Will not block the main thread.
+     * It seems that delay function has it specifics, causing the caller thread not block.
+     */
+    /*
+    fun longOperation() {
+        viewModelScope.launch {
+            println("Long operation started")
+            delay(10000)
+            println("Long operation finished")
+            longFlow.value = "Long operation completed"
+        }
+    }
+     */
+
+    /**
+     * Will block the main thread.
+     */
+    /*
+    fun longOperation() {
+        viewModelScope.launch {
+            println("Long operation started")
+            val x = longComputation()
+            println("Long operation finished")
+            longFlow.value = "Long operation completed"
+        }
+    }
+     */
+
+    /**
+     * Will not block the main thread.
+     * Regardless of being executed on IO context, the flow will be collected at Main thread.
+     */
+    /*
+    fun longOperation() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                println("Long operation started")
+                val x = longComputation()
+                println("Long operation finished")
+                longFlow.value = "Long operation completed"
+            }
+        }
+    }
+     */
+
+    private suspend fun longComputation(): Long {
+        var x = 0L
+        for (i in 0..10000000000L) {
+            x = i
+        }
+        return x
     }
 
 }
