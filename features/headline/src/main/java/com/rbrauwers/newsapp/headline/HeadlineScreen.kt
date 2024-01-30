@@ -64,7 +64,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.rbrauwers.newsapp.ui.AuthActionButton
+import com.rbrauwers.newsapp.ui.ProfileActionButton
 import com.rbrauwers.newsapp.ui.BadgedTopBar
 import com.rbrauwers.newsapp.ui.BottomBarState
 import com.rbrauwers.newsapp.ui.CenteredError
@@ -89,7 +89,7 @@ internal fun HeadlinesRoute(
     viewModel: HeadlineViewModel = hiltViewModel(),
     onNavigateToInfo: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToAuth: () -> Unit
+    onNavigateToProfile: () -> Unit
 ) {
     val uiState: HeadlineUiState by viewModel.headlineUiState.collectAsStateWithLifecycle()
     val searchState: SearchState by viewModel.searchState.collectAsStateWithLifecycle()
@@ -103,7 +103,7 @@ internal fun HeadlinesRoute(
         onQueryChange = viewModel::onQueryChange,
         onNavigateToInfo = onNavigateToInfo,
         onNavigateToSettings = onNavigateToSettings,
-        onNavigateToAuth = onNavigateToAuth
+        onNavigateToProfile = onNavigateToProfile
     )
 }
 
@@ -118,7 +118,7 @@ private fun HeadlinesScreen(
     onQueryChange: (String) -> Unit,
     onNavigateToInfo: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToAuth: () -> Unit
+    onNavigateToProfile: () -> Unit
 ) {
     LocalAppState.current.apply {
         LaunchedEffect(uiState) {
@@ -133,7 +133,7 @@ private fun HeadlinesScreen(
                     actions = {
                         InfoActionButton(onClick = onNavigateToInfo)
                         SettingsActionButton(onClick = onNavigateToSettings)
-                        AuthActionButton(onClick = onNavigateToAuth)
+                        ProfileActionButton(onClick = onNavigateToProfile)
                     }
                 )
             )
@@ -378,7 +378,7 @@ private fun ScreenPreview(
         onQueryChange = { },
         onNavigateToInfo = { },
         onNavigateToSettings = { },
-        onNavigateToAuth = { }
+        onNavigateToProfile = { }
     )
 }
 

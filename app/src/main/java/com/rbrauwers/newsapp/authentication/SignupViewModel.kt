@@ -1,8 +1,11 @@
 package com.rbrauwers.newsapp.authentication
 
+import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rbrauwers.newsapp.data.repository.UserSettingsRepository
+import com.rbrauwers.newsapp.model.UserSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,39 +15,36 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 @HiltViewModel
 internal class SignupViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
+    private val userSettingsRepository: UserSettingsRepository
 ) : ViewModel() {
 
     private val emailState: StateFlow<String?> =
         savedStateHandle.getStateFlow(emailArg, null)
 
-    private val passwordState: StateFlow<String?> =
-        savedStateHandle.getStateFlow(StateKeys.Password.name, null)
-
-    private val passwordConfirmationState: StateFlow<String?> =
-        savedStateHandle.getStateFlow(StateKeys.PasswordConfirmation.name, null)
+    private val inputState: StateFlow<Input> =
+        savedStateHandle.getStateFlow(StateKeys.Input.name, Input())
 
     private val statusState: MutableStateFlow<Status> = MutableStateFlow(Status())
 
     val uiState: StateFlow<UiState> =
         combine(
             emailState,
-            passwordState,
-            passwordConfirmationState,
+            inputState,
             statusState
-        ) { email, password, passwordConfirmation, status ->
+        ) { email, input, status ->
             combine(
                 email = email,
-                password = password,
-                passwordConfirmation = passwordConfirmation,
+                input = input,
                 status = status,
                 passwordValidationResult = ValidatePasswordUseCase().validate(
-                    password = password,
-                    passwordConfirmation = passwordConfirmation
+                    password = input.password,
+                    passwordConfirmation = input.passwordConfirmation
                 )
             )
         }.stateIn(
@@ -59,7 +59,13 @@ internal class SignupViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            delay(4000)
+            userSettingsRepository.save(
+                UserSettings(
+                    username = emailState.value,
+                    password = inputState.value.password
+                )
+            )
+
             statusState.update {
                 Status(
                     isProcessing = false,
@@ -70,11 +76,11 @@ internal class SignupViewModel @Inject constructor(
     }
 
     fun updatePassword(value: String?) {
-        savedStateHandle[StateKeys.Password.name] = value
+        savedStateHandle[StateKeys.Input.name] = inputState.value.copy(password = value)
     }
 
     fun updatePasswordConfirmation(value: String?) {
-        savedStateHandle[StateKeys.PasswordConfirmation.name] = value
+        savedStateHandle[StateKeys.Input.name] = inputState.value.copy(passwordConfirmation = value)
     }
 
     data class UiState(
@@ -93,10 +99,15 @@ internal class SignupViewModel @Inject constructor(
         val isSuccess: Boolean = false
     )
 
+    @Parcelize
+    data class Input(
+        val password: String? = null,
+        val passwordConfirmation: String? = null
+    ) : Parcelable
+
     private fun combine(
         email: String?,
-        password: String?,
-        passwordConfirmation: String?,
+        input: Input,
         status: Status?,
         passwordValidationResult: ValidatePasswordUseCase.Result
     ): UiState {
@@ -104,8 +115,8 @@ internal class SignupViewModel @Inject constructor(
 
         return UiState(
             email = email.orEmpty(),
-            password = password.orEmpty(),
-            passwordConfirmation = passwordConfirmation.orEmpty(),
+            password = input.password.orEmpty(),
+            passwordConfirmation = input.passwordConfirmation.orEmpty(),
             canProceed = passwordValidationResult is ValidatePasswordUseCase.Result.Success,
             passwordError = validationError?.passwordError,
             passwordConfirmationError = validationError?.passwordConfirmationError,
@@ -115,8 +126,7 @@ internal class SignupViewModel @Inject constructor(
     }
 
     private enum class StateKeys {
-        Password,
-        PasswordConfirmation
+        Input
     }
 
 }

@@ -46,7 +46,7 @@ fun SettingsActionButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun AuthActionButton(onClick: () -> Unit) {
+fun ProfileActionButton(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
         Icon(
             imageVector = Icons.Outlined.AccountCircle,

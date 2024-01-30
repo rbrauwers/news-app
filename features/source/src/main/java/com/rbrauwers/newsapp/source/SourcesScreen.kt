@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.model.NewsSource
-import com.rbrauwers.newsapp.ui.AuthActionButton
+import com.rbrauwers.newsapp.ui.ProfileActionButton
 import com.rbrauwers.newsapp.ui.BadgedTopBar
 import com.rbrauwers.newsapp.ui.BottomBarState
 import com.rbrauwers.newsapp.ui.CenteredError
@@ -61,7 +61,7 @@ internal fun SourcesRoute(
     onNavigateToSource: (NewsSource) -> Unit,
     onNavigateToInfo: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToAuth: () -> Unit
+    onNavigateToProfile: () -> Unit
 ) {
     val uiState: SourcesUiState by viewModel.sourcesUiState.collectAsStateWithLifecycle()
 
@@ -71,7 +71,7 @@ internal fun SourcesRoute(
         onNavigateToSource = onNavigateToSource,
         onNavigateToInfo = onNavigateToInfo,
         onNavigateToSettings = onNavigateToSettings,
-        onNavigateToAuth = onNavigateToAuth
+        onNavigateToProfile = onNavigateToProfile
     )
 }
 
@@ -82,7 +82,7 @@ private fun SourcesScreen(
     onNavigateToSource: (NewsSource) -> Unit,
     onNavigateToInfo: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToAuth: () -> Unit
+    onNavigateToProfile: () -> Unit
 ) {
     LocalAppState.current.apply {
         LaunchedEffect(uiState) {
@@ -97,7 +97,7 @@ private fun SourcesScreen(
                     actions =  {
                         InfoActionButton(onClick = onNavigateToInfo)
                         SettingsActionButton(onClick = onNavigateToSettings)
-                        AuthActionButton(onClick = onNavigateToAuth)
+                        ProfileActionButton(onClick = onNavigateToProfile)
                     }
                 )
             )
@@ -204,6 +204,6 @@ private fun SourcesScreenPreview(
         onNavigateToSource = { },
         onNavigateToInfo = { },
         onNavigateToSettings = { },
-        onNavigateToAuth = { }
+        onNavigateToProfile = { }
     )
 }

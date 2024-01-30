@@ -22,7 +22,7 @@ class NewsApplication : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
         super.onCreate()
-        sync()
+        //sync()
     }
 
     override fun newImageLoader(): ImageLoader {

@@ -21,7 +21,7 @@ internal const val sourcesBaseRoute = "sources"
 fun NavGraphBuilder.sourcesNavHost(
     onNavigateToInfo: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToAuth: () -> Unit
+    onNavigateToProfile: () -> Unit
 ) {
     composable(route = sourcesBaseRoute) {
         val navController = rememberNavController()
@@ -30,7 +30,7 @@ fun NavGraphBuilder.sourcesNavHost(
                 navController = navController,
                 onNavigateToInfo = onNavigateToInfo,
                 onNavigateToSettings = onNavigateToSettings,
-                onNavigateToAuth = onNavigateToAuth
+                onNavigateToProfile = onNavigateToProfile
             )
         }
     }
@@ -40,14 +40,14 @@ private fun NavGraphBuilder.sourcesNavGraph(
     navController: NavController,
     onNavigateToInfo: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToAuth: () -> Unit
+    onNavigateToProfile: () -> Unit
 ) {
     navigation(startDestination = sourcesScreen.route, route = sourcesBaseRoute) {
         sourcesScreen(
             navController = navController,
             onNavigateToInfo = onNavigateToInfo,
             onNavigateToSettings = onNavigateToSettings,
-            onNavigateToAuth = onNavigateToAuth
+            onNavigateToProfile = onNavigateToProfile
         )
 
         sourceScreen(
@@ -63,7 +63,7 @@ private fun NavGraphBuilder.sourcesScreen(
     navController: NavController,
     onNavigateToInfo: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToAuth: () -> Unit
+    onNavigateToProfile: () -> Unit
 ) {
     composable(route = sourcesScreen.route) {
         SourcesRoute(
@@ -73,7 +73,7 @@ private fun NavGraphBuilder.sourcesScreen(
             },
             onNavigateToInfo = onNavigateToInfo,
             onNavigateToSettings = onNavigateToSettings,
-            onNavigateToAuth = onNavigateToAuth
+            onNavigateToProfile = onNavigateToProfile
         )
     }
 }

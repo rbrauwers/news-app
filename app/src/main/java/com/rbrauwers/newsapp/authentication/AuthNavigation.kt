@@ -13,13 +13,13 @@ import androidx.navigation.navigation
 
 internal const val authBaseRoute = "auth"
 
-fun NavGraphBuilder.authNavHost(onNavigateToHome: () -> Unit) {
+fun NavGraphBuilder.authNavHost(onPopAuthGraph: () -> Unit) {
     composable(route = authBaseRoute) {
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = authBaseRoute) {
             authNavGraph(
                 navController = navController,
-                onNavigateToHome = onNavigateToHome
+                onPopAuthGraph = onPopAuthGraph
             )
         }
     }
@@ -27,11 +27,11 @@ fun NavGraphBuilder.authNavHost(onNavigateToHome: () -> Unit) {
 
 private fun NavGraphBuilder.authNavGraph(
     navController: NavController,
-    onNavigateToHome: () -> Unit
+    onPopAuthGraph: () -> Unit
 ) {
     navigation(startDestination = emailScreen.route, route = authBaseRoute) {
-        emailScreen(navController = navController, onNavigateToHome = onNavigateToHome)
-        passwordScreen(navController = navController, onNavigateToHome = onNavigateToHome)
+        emailScreen(navController = navController, onPopAuthGraph = onPopAuthGraph)
+        passwordScreen(navController = navController, onNavigateToHome = onPopAuthGraph)
     }
 }
 
@@ -46,12 +46,14 @@ private fun NavController.navigateToPassword(email: String, navOptions: NavOptio
 private fun NavGraphBuilder.emailScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    onNavigateToHome: () -> Unit
+    onPopAuthGraph: () -> Unit
 ) {
     composable(route = emailScreen.route) {
         EmailRoute(
             modifier = modifier,
-            onBackClick = onNavigateToHome,
+            onBackClick = {
+                onPopAuthGraph()
+            },
             onNavigateToPassword = navController::navigateToPassword
         )
     }
