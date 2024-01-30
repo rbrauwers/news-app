@@ -8,7 +8,7 @@ import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
 
-class UserSettingsSerializer(
+internal class UserSettingsSerializer(
     private val cryptoManager: CryptoManager
 ) : Serializer<UserSettings> {
 
