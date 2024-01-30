@@ -44,7 +44,6 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -70,6 +69,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
+import com.rbrauwers.newsapp.ui.ProfileActionButton
 import com.rbrauwers.newsapp.ui.BadgedTopBar
 import com.rbrauwers.newsapp.ui.BottomBarState
 import com.rbrauwers.newsapp.ui.CenteredError
@@ -81,7 +81,6 @@ import com.rbrauwers.newsapp.ui.SettingsActionButton
 import com.rbrauwers.newsapp.ui.TopBarState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 
 val pagedHeadlinesScreen = Screen(
     baseRoute = headlinesBaseRoute,
@@ -95,7 +94,8 @@ internal fun PagedHeadlinesRoute(
     modifier: Modifier = Modifier,
     viewModel: PagedHeadlineViewModel = hiltViewModel(),
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     val searchState: SearchState by viewModel.searchState.collectAsStateWithLifecycle()
     val pagingData = viewModel.articlesPageFlow.collectAsLazyPagingItems()
@@ -108,7 +108,8 @@ internal fun PagedHeadlinesRoute(
         onLikedChanged = viewModel::updateLiked,
         onQueryChange = viewModel::onQueryChange,
         onNavigateToInfo = onNavigateToInfo,
-        onNavigateToSettings = onNavigateToSettings
+        onNavigateToSettings = onNavigateToSettings,
+        onNavigateToProfile = onNavigateToProfile
     )
 }
 
@@ -122,7 +123,8 @@ private fun HeadlinesScreen(
     onLikedChanged: (ArticleUi, Boolean) -> Unit,
     onQueryChange: (String) -> Unit,
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     LocalAppState.current.apply {
         LaunchedEffect(pagingData) {
@@ -137,6 +139,7 @@ private fun HeadlinesScreen(
                     actions = {
                         InfoActionButton(onClick = onNavigateToInfo)
                         SettingsActionButton(onClick = onNavigateToSettings)
+                        ProfileActionButton(onClick = onNavigateToProfile)
                     }
                 )
             )
@@ -146,7 +149,6 @@ private fun HeadlinesScreen(
     }
 
     val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
     val pullToRefreshState = rememberPullToRefreshState(positionalThreshold = 120.dp)
 
     if (pullToRefreshState.isRefreshing) {
@@ -218,7 +220,7 @@ private fun HeadlinesScreen(
                     }
 
                     if (searchState.query.isNullOrBlank() && searchState.wasQuerying) {
-                        coroutineScope.launch {
+                        LaunchedEffect(Unit) {
                             listState.scrollToItem(0)
                         }
                     }
@@ -399,7 +401,8 @@ private fun ScreenPreview(
         onLikedChanged = { _, _ -> Boolean },
         onQueryChange = { },
         onNavigateToInfo = { },
-        onNavigateToSettings = { }
+        onNavigateToSettings = { },
+        onNavigateToProfile = { }
     )
 }
 

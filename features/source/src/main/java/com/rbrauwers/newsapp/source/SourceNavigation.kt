@@ -20,7 +20,8 @@ internal const val sourcesBaseRoute = "sources"
 
 fun NavGraphBuilder.sourcesNavHost(
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     composable(route = sourcesBaseRoute) {
         val navController = rememberNavController()
@@ -28,7 +29,8 @@ fun NavGraphBuilder.sourcesNavHost(
             sourcesNavGraph(
                 navController = navController,
                 onNavigateToInfo = onNavigateToInfo,
-                onNavigateToSettings = onNavigateToSettings
+                onNavigateToSettings = onNavigateToSettings,
+                onNavigateToProfile = onNavigateToProfile
             )
         }
     }
@@ -37,13 +39,15 @@ fun NavGraphBuilder.sourcesNavHost(
 private fun NavGraphBuilder.sourcesNavGraph(
     navController: NavController,
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     navigation(startDestination = sourcesScreen.route, route = sourcesBaseRoute) {
         sourcesScreen(
             navController = navController,
             onNavigateToInfo = onNavigateToInfo,
-            onNavigateToSettings = onNavigateToSettings
+            onNavigateToSettings = onNavigateToSettings,
+            onNavigateToProfile = onNavigateToProfile
         )
 
         sourceScreen(
@@ -58,7 +62,8 @@ private fun NavGraphBuilder.sourcesScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     composable(route = sourcesScreen.route) {
         SourcesRoute(
@@ -67,7 +72,8 @@ private fun NavGraphBuilder.sourcesScreen(
                 navController.navigateToSource(source = it)
             },
             onNavigateToInfo = onNavigateToInfo,
-            onNavigateToSettings = onNavigateToSettings
+            onNavigateToSettings = onNavigateToSettings,
+            onNavigateToProfile = onNavigateToProfile
         )
     }
 }

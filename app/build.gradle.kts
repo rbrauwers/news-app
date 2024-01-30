@@ -1,6 +1,7 @@
 plugins {
     id("com.rbrauwers.newapp.application.plugin")
     id("com.rbrauwers.newapp.hilt.plugin")
+    id("kotlin-parcelize")
     alias(libs.plugins.baseline.profiler)
 }
 

@@ -17,13 +17,15 @@ const val headlinesBaseRoute = "headlines"
 
 fun NavGraphBuilder.headlinesNavHost(
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     composable(route = headlinesBaseRoute) {
         NavHost(navController = rememberNavController(), startDestination = headlinesBaseRoute) {
             headlinesNavGraph(
                 onNavigateToInfo = onNavigateToInfo,
-                onNavigateToSettings = onNavigateToSettings
+                onNavigateToSettings = onNavigateToSettings,
+                onNavigateToProfile = onNavigateToProfile
             )
         }
     }
@@ -31,13 +33,15 @@ fun NavGraphBuilder.headlinesNavHost(
 
 fun NavGraphBuilder.pagedHeadlinesNavHost(
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     composable(route = headlinesBaseRoute) {
         NavHost(navController = rememberNavController(), startDestination = headlinesBaseRoute) {
             pagedHeadlinesNavGraph(
                 onNavigateToInfo = onNavigateToInfo,
-                onNavigateToSettings = onNavigateToSettings
+                onNavigateToSettings = onNavigateToSettings,
+                onNavigateToProfile = onNavigateToProfile
             )
         }
     }
@@ -45,12 +49,14 @@ fun NavGraphBuilder.pagedHeadlinesNavHost(
 
 private fun NavGraphBuilder.headlinesNavGraph(
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     navigation(startDestination = headlinesScreen.route, route = headlinesBaseRoute) {
         headlinesScreen(
             onNavigateToInfo = onNavigateToInfo,
-            onNavigateToSettings = onNavigateToSettings
+            onNavigateToSettings = onNavigateToSettings,
+            onNavigateToProfile = onNavigateToProfile
         )
     }
 }
@@ -58,12 +64,14 @@ private fun NavGraphBuilder.headlinesNavGraph(
 
 private fun NavGraphBuilder.pagedHeadlinesNavGraph(
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     navigation(startDestination = pagedHeadlinesScreen.route, route = headlinesBaseRoute) {
         pagedHeadlinesScreen(
             onNavigateToInfo = onNavigateToInfo,
-            onNavigateToSettings = onNavigateToSettings
+            onNavigateToSettings = onNavigateToSettings,
+            onNavigateToProfile = onNavigateToProfile
         )
     }
 }
@@ -75,13 +83,15 @@ fun NavController.navigateToHeadlines(navOptions: NavOptions? = null) {
 private fun NavGraphBuilder.headlinesScreen(
     modifier: Modifier = Modifier,
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     composable(route = headlinesScreen.route) {
         HeadlinesRoute(
             modifier = modifier,
             onNavigateToInfo = onNavigateToInfo,
-            onNavigateToSettings = onNavigateToSettings
+            onNavigateToSettings = onNavigateToSettings,
+            onNavigateToProfile = onNavigateToProfile
         )
     }
 }
@@ -89,13 +99,15 @@ private fun NavGraphBuilder.headlinesScreen(
 private fun NavGraphBuilder.pagedHeadlinesScreen(
     modifier: Modifier = Modifier,
     onNavigateToInfo: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToProfile: () -> Unit
 ) {
     composable(route = pagedHeadlinesScreen.route) {
         PagedHeadlinesRoute(
             modifier = modifier,
             onNavigateToInfo = onNavigateToInfo,
-            onNavigateToSettings = onNavigateToSettings
+            onNavigateToSettings = onNavigateToSettings,
+            onNavigateToProfile = onNavigateToProfile
         )
     }
 }
