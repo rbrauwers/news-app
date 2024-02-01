@@ -1,6 +1,7 @@
 package com.rbrauwers.newsapp.data
 
 import com.rbrauwers.newsapp.data.model.toEntity
+import com.rbrauwers.newsapp.tests.articlesList
 import org.junit.Assert
 import org.junit.Test
 
@@ -8,6 +9,7 @@ class ArticleMapperTests {
 
     @Test
     fun articleShouldMapToEntity() {
+        val article = articlesList.first()
         val entity = article.toEntity()
         Assert.assertEquals(article.author, entity.author)
         Assert.assertEquals(article.content, entity.content)

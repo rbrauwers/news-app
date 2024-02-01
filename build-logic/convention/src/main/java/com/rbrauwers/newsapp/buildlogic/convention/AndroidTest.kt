@@ -20,6 +20,8 @@ internal fun Project.configureTests(
         dependencies {
             add("testImplementation", libs.findLibrary("junit").get())
             add("testImplementation", libs.findLibrary("robolectric").get())
+            add("testImplementation", libs.findLibrary("androidx-junit").get())
+            add("testImplementation", libs.findLibrary("turbine").get())
             add("androidTestImplementation", libs.findLibrary("androidx-junit").get())
             add("androidTestImplementation", libs.findLibrary("espresso-core").get())
         }
