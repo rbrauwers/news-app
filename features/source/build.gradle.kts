@@ -18,6 +18,11 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
+
+    testImplementation(libs.appcompat)
+    testImplementation(libs.lifecycle.viewmodel)
+    testImplementation(libs.core.test)
+    testImplementation(project(":core:tests"))
 }
 
 kapt {

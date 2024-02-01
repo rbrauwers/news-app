@@ -16,7 +16,11 @@ class HeadlineScreenTests {
     @Test
     fun authorShouldBeDisplayed() {
         composeTestRule.setContent {
-            Headline(article = article, isFirst = true, isLast = false)
+            Headline(
+                article = article,
+                isFirst = true,
+                isLast = false,
+                onLikedChanged = { _, _ -> })
         }
 
         composeTestRule

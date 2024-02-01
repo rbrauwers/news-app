@@ -17,6 +17,8 @@ dependencies {
     implementation(libs.datastore)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.paging.runtime)
+
+    testImplementation(project(":core:tests"))
 }
 
 kapt {

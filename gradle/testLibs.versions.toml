@@ -4,6 +4,7 @@ benchmark-macro-junit4 = "1.2.2"
 espresso = "3.5.1"
 junit = "4.13.2"
 robolectric = "4.11.1"
+turbine = "1.0.0"
 uiautomator = "2.2.0"
 
 [libraries]
@@ -14,4 +15,5 @@ compose-manifest = { module = "androidx.compose.ui:ui-test-manifest"  }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
 junit = { module = "junit:junit", version.ref = "junit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
