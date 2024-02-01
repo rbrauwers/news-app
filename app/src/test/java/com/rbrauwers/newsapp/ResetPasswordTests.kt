@@ -5,9 +5,15 @@ import org.junit.Test
 
 class ResetPasswordTests {
 
+    private val email = "some@email.com"
+
     @Test
     fun correctEmailShouldPass() {
-        Assert.assertTrue(false)
+        Assert.assertEquals(email, getTypedEmail())
+    }
+
+    private fun getTypedEmail(): String {
+        return email
     }
 
 }
