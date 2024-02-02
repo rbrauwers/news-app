@@ -44,6 +44,7 @@ internal class ResetPasswordViewModelTest {
         viewModel.uiState.test {
             // Skip initial value
             skipItems(1)
+
             val email = "some@email.com"
             viewModel.update(email)
             Assert.assertEquals(email, awaitItem().email)
@@ -53,10 +54,20 @@ internal class ResetPasswordViewModelTest {
 
     @Test
     fun correctEmailShouldEnablePasswordReset() = runTest {
-        val email = "some@email.com"
-        fakeUserSettingsRepository.save(UserSettings(username = email))
-        viewModel.update(email)
-        Assert.assertTrue(viewModel.uiState.value.isResetPasswordEnabled)
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.uiState.collect()
+        }
+
+        viewModel.uiState.test {
+            // Skip initial value
+            skipItems(1)
+
+            val email = "some@email.com"
+            fakeUserSettingsRepository.save(UserSettings(username = email))
+            viewModel.update(email)
+            Assert.assertTrue(awaitItem().isResetPasswordEnabled)
+            job.cancel()
+        }
     }
 
 }
