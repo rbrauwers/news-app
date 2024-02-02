@@ -1,7 +1,9 @@
 package com.rbrauwers.newsapp
 
 import app.cash.turbine.test
+import com.rbrauwers.newsapp.model.UserSettings
 import com.rbrauwers.newsapp.resetpassword.ResetPasswordViewModel
+import com.rbrauwers.newsapp.tests.FakeUserSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -50,11 +52,11 @@ internal class ResetPasswordViewModelTest {
     }
 
     @Test
-    fun correctEmailShouldEnablePasswordReset() {
+    fun correctEmailShouldEnablePasswordReset() = runTest {
         val email = "some@email.com"
-        fakeUserSettingsRepository.emit(email)
+        fakeUserSettingsRepository.save(UserSettings(username = email))
         viewModel.update(email)
-        Assert.assertTrue(viewModel.uiState.isResetPasswordEnabled)
+        Assert.assertTrue(viewModel.uiState.value.isResetPasswordEnabled)
     }
 
 }

@@ -78,6 +78,8 @@ dependencies {
     implementation(project(":features:headline"))
     implementation(project(":features:source"))
 
+    testImplementation(project(":core:tests"))
+
     kover(project(":core:data"))
     kover(project(":core:network"))
     kover(project(":core:model"))
