@@ -16,24 +16,23 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class ResetPasswordViewModelTest {
 
+    private val fakeUserSettingsRepository = FakeUserSettingsRepository()
     private lateinit var viewModel: ResetPasswordViewModel
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
         Dispatchers.setMain(StandardTestDispatcher())
-        viewModel = ResetPasswordViewModel()
+        viewModel = ResetPasswordViewModel(userSettingsRepository = fakeUserSettingsRepository)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun typedEmailShouldBeCollected() = runTest {
         val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -48,6 +47,14 @@ internal class ResetPasswordViewModelTest {
             Assert.assertEquals(email, awaitItem().email)
             job.cancel()
         }
+    }
+
+    @Test
+    fun correctEmailShouldEnablePasswordReset() {
+        val email = "some@email.com"
+        fakeUserSettingsRepository.emit(email)
+        viewModel.update(email)
+        Assert.assertTrue(viewModel.uiState.isResetPasswordEnabled)
     }
 
 }
