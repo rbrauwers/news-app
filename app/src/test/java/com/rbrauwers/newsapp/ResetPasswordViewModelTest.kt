@@ -70,5 +70,25 @@ internal class ResetPasswordViewModelTest {
         }
     }
 
+    @Test
+    fun incorrectEmailShouldDisablePasswordReset() = runTest {
+        val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.uiState.collect()
+        }
+
+        viewModel.uiState.test {
+            // Skip initial value
+            skipItems(1)
+
+            val email = "some@email.com"
+            val email2 = "other@email.com"
+
+            fakeUserSettingsRepository.save(UserSettings(username = email))
+            viewModel.update(email2)
+            Assert.assertFalse(awaitItem().isResetPasswordEnabled)
+            job.cancel()
+        }
+    }
+
 }
 
