@@ -1,6 +1,9 @@
 package com.rbrauwers.newsapp
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import com.rbrauwers.newsapp.data.repository.HeadlineRepository
@@ -10,6 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+const val SERVICE_CHANNEL_ID = "newsAppForegroundServiceChannel"
 
 @HiltAndroidApp
 class NewsApplication : Application(), ImageLoaderFactory {
@@ -23,6 +28,7 @@ class NewsApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         sync()
+        createNotificationChannel()
     }
 
     override fun newImageLoader(): ImageLoader {
@@ -35,6 +41,16 @@ class NewsApplication : Application(), ImageLoaderFactory {
         MainScope().launch(context = Dispatchers.IO) {
             sourceRepository.sync()
             headlinesRepository.sync()
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_LOW
+            val channel = NotificationChannel(SERVICE_CHANNEL_ID, "NewsApp Foreground Service", importance)
+            channel.description = "NewsApp Foreground Service description"
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 

@@ -1,6 +1,8 @@
 package com.rbrauwers.newsapp.settings
 
 import android.Manifest
+import android.content.Intent
+import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -55,6 +57,7 @@ import com.rbrauwers.newsapp.R
 import com.rbrauwers.newsapp.common.BiometricAuthenticator
 import com.rbrauwers.newsapp.common.findActivity
 import com.rbrauwers.newsapp.common.openAppSettings
+import com.rbrauwers.newsapp.foregroundservice.NewsService
 import com.rbrauwers.newsapp.model.Article
 import com.rbrauwers.newsapp.ui.BackNavigationIcon
 import com.rbrauwers.newsapp.ui.BottomBarState
@@ -176,6 +179,8 @@ private fun Success(
         mutableStateOf(false)
     }
 
+    val context = LocalContext.current
+
     Column(modifier = Modifier.padding(24.dp)) {
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
@@ -184,6 +189,28 @@ private fun Success(
             }
         ) {
             Text("Grant permissions")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                NewsService.run(action = NewsService.Actions.Start, context = context)
+            }
+        ) {
+            Text("Start sync service")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                NewsService.run(action = NewsService.Actions.Stop, context = context)
+            }
+        ) {
+            Text("Stop sync service")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
