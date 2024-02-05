@@ -23,6 +23,8 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
+
+    testImplementation(project(":core:tests"))
 }
 
 kapt {

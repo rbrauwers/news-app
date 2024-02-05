@@ -99,16 +99,4 @@ internal class PagedHeadlineViewModel @Inject constructor(
 
 }
 
-private fun Article.toArticleUi(
-    dateConverter: ConvertStringToDateTimeInstance
-) = ArticleUi(
-    id = id,
-    author = if (author.isNullOrBlank()) "Author: N/A" else author,
-    title = "$title",
-    urlToImage = urlToImage,
-    url = url,
-    publishedAt = publishedAt,
-    liked = liked,
-    dateConverter = dateConverter
-)
 

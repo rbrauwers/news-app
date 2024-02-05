@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.rbrauwers.newsapp.authentication.navigateToAuth
+import com.rbrauwers.newsapp.resetpassword.navigateToResetPassword
 
 internal const val profileBaseRoute = "profile"
 
@@ -27,6 +28,9 @@ fun NavGraphBuilder.profileScreen(
             },
             onNavigateToAuth = {
                 navController.navigateToAuth()
+            },
+            onNavigateToResetPassword = {
+                navController.navigateToResetPassword()
             }
         )
     }
