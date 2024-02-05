@@ -215,6 +215,23 @@ private fun Success(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                Intent().also { intent ->
+                    intent.action = "com.rbrauwers.news.NewsAction"
+                    intent.putExtra("data", "Some data")
+                    intent.`package` = "com.rbrauwers.viewsystemsample"
+                    //context.sendBroadcast(intent, "com.rbrauwers.news.permission")
+                    context.sendBroadcast(intent)
+                }
+            }
+        ) {
+            Text("Send broadcast")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         BiometricAuthentication(
             uiState = uiState,
             biometricAuthenticator = biometricAuthenticator,
