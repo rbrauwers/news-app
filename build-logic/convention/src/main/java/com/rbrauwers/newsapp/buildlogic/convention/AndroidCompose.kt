@@ -49,6 +49,7 @@ internal fun Project.configureAndroidCompose(
             add("testImplementation", libs.findLibrary("compose-ui-test").get())
             add("testImplementation", libs.findLibrary("compose-ui-test-junit4").get())
             add("testImplementation", libs.findLibrary("compose-ui-test-manifest").get())
+            add("debugImplementation", libs.findLibrary("compose-ui-test-manifest").get())
         }
     }
 }

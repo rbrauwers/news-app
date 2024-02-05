@@ -10,16 +10,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.R
+import com.rbrauwers.newsapp.model.UserSettings
 import com.rbrauwers.newsapp.ui.BackNavigationIcon
 import com.rbrauwers.newsapp.ui.BottomBarState
 import com.rbrauwers.newsapp.ui.LocalAppState
@@ -38,6 +41,7 @@ val profileScreen = Screen(
 internal fun ProfileRoute(
     onBackClick: () -> Unit,
     onNavigateToAuth: () -> Unit,
+    onNavigateToResetPassword: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -61,6 +65,7 @@ internal fun ProfileRoute(
         uiState = uiState,
         modifier = modifier,
         onNavigateToAuth = onNavigateToAuth,
+        onNavigateToResetPassword = onNavigateToResetPassword,
         onSignOut = viewModel::signOut
     )
 }
@@ -69,6 +74,7 @@ internal fun ProfileRoute(
 private fun ProfileScreen(
     uiState: ProfileViewModel.UiState,
     onNavigateToAuth: () -> Unit,
+    onNavigateToResetPassword: () -> Unit,
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -95,9 +101,30 @@ private fun ProfileScreen(
         }
 
         if (uiState.isSignOutEnabled) {
+            OutlinedButton(
+                onClick = onNavigateToResetPassword,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Reset password")
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
             FilledTonalButton(onClick = onSignOut, modifier = Modifier.fillMaxWidth()) {
                 Text("Sign Out")
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProfileScreenPreview() {
+    ProfileScreen(
+        uiState = ProfileViewModel.UiState(
+            userSettings = UserSettings(username = "some@email.com", password = "abcd"),
+            isLoading = false
+        ),
+        onNavigateToAuth = { },
+        onNavigateToResetPassword = { },
+        onSignOut = { })
 }

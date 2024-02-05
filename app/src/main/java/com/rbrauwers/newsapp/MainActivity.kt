@@ -40,6 +40,7 @@ import com.rbrauwers.newsapp.info.infoScreen
 import com.rbrauwers.newsapp.info.navigateToInfo
 import com.rbrauwers.newsapp.profile.navigateToProfile
 import com.rbrauwers.newsapp.profile.profileScreen
+import com.rbrauwers.newsapp.resetpassword.resetPasswordScreen
 import com.rbrauwers.newsapp.settings.navigateToSettings
 import com.rbrauwers.newsapp.settings.settingsScreen
 import com.rbrauwers.newsapp.source.SourcesNavigationBarItem
@@ -163,6 +164,7 @@ private fun Content() {
                     authNavHost(onPopAuthGraph = { navController.popBackStack() })
                     infoScreen(navController = navController)
                     profileScreen(navController = navController)
+                    resetPasswordScreen(navController = navController)
                     settingsScreen(navController = navController)
                 }
             }

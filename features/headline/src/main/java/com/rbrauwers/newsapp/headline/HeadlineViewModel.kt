@@ -137,7 +137,7 @@ private fun Result<List<Article>>.toHeadlineUiState(): HeadlineUiState {
     }
 }
 
-private fun Article.toArticleUi(
+internal fun Article.toArticleUi(
     dateConverter: ConvertStringToDateTimeInstance
 ) = ArticleUi(
     id = id,

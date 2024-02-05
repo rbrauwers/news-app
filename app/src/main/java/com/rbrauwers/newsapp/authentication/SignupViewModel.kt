@@ -94,13 +94,13 @@ internal class SignupViewModel @Inject constructor(
         val passwordConfirmationError: String? = null
     )
 
-    data class Status(
+    internal data class Status(
         val isProcessing: Boolean = false,
         val isSuccess: Boolean = false
     )
 
     @Parcelize
-    data class Input(
+    internal data class Input(
         val password: String? = null,
         val passwordConfirmation: String? = null
     ) : Parcelable

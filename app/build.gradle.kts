@@ -60,6 +60,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -77,7 +78,11 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":features:headline"))
     implementation(project(":features:source"))
+    debugImplementation(libs.fragment.testing)
 
+    testImplementation(libs.appcompat)
+    testImplementation(libs.lifecycle.viewmodel)
+    testImplementation(libs.core.test)
     testImplementation(project(":core:tests"))
 
     kover(project(":core:data"))
@@ -96,7 +101,6 @@ kapt {
 
 koverReport {
     androidReports("debug") {
-
     }
 }
 
