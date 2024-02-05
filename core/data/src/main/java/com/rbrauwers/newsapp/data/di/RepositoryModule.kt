@@ -31,12 +31,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
 
     @Provides
+    @Singleton
     fun provideHeadlineRepository(
         networkDataSource: NetworkDataSource,
         dao: HeadlineDao
@@ -44,18 +46,21 @@ object RepositoryModule {
         SyncedHeadlineRepository(networkDataSource = networkDataSource, dao = dao)
 
     @Provides
+    @Singleton
     fun provideSourceRepository(
         networkDataSource: NetworkDataSource,
         dao: SourceDao
     ): SourceRepository = SyncedSourceRepository(networkDataSource = networkDataSource, dao = dao)
 
     @Provides
+    @Singleton
     fun provideCountryRepository(
         graphQLDataSource: GraphQLDataSource
     ): CountryRepository = GraphQLCountryRepository(dataSource = graphQLDataSource)
 
     @OptIn(ExperimentalPagingApi::class)
     @Provides
+    @Singleton
     fun provideArticlesPager(
         database: NewsDatabase,
         networkDataSource: NetworkDataSource
@@ -79,6 +84,7 @@ object RepositoryModule {
     }
 
     @Provides
+    @Singleton
     fun provideUserSettingsDataStore(
         @ApplicationContext context: Context
     ) : DataStore<UserSettings> {
@@ -86,6 +92,7 @@ object RepositoryModule {
     }
 
     @Provides
+    @Singleton
     fun provideUserSettingsRepository(
         dataStore: DataStore<UserSettings>
     ) : UserSettingsRepository = DefaultUserSettingsRepository(
