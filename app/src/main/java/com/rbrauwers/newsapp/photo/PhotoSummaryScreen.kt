@@ -1,4 +1,4 @@
-package com.rbrauwers.newsapp.settings
+package com.rbrauwers.newsapp.photo
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rbrauwers.newsapp.R
+import com.rbrauwers.newsapp.settings.settingsBaseRoute
+import com.rbrauwers.newsapp.settings.settingsScreen
 import com.rbrauwers.newsapp.ui.CloseNavigationIcon
 import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.NewsDefaultTopBar

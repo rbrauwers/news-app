@@ -1,4 +1,4 @@
-package com.rbrauwers.newsapp.settings
+package com.rbrauwers.newsapp.photo
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rbrauwers.newsapp.R
+import com.rbrauwers.newsapp.settings.photoIdArg
+import com.rbrauwers.newsapp.settings.settingsBaseRoute
+import com.rbrauwers.newsapp.settings.settingsScreen
 import com.rbrauwers.newsapp.ui.BackNavigationIcon
 import com.rbrauwers.newsapp.ui.LocalAppState
 import com.rbrauwers.newsapp.ui.NewsDefaultTopBar

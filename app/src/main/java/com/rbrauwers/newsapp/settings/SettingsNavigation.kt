@@ -7,6 +7,10 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.rbrauwers.newsapp.photo.PhotoRoute
+import com.rbrauwers.newsapp.photo.PhotoSummaryRoute
+import com.rbrauwers.newsapp.photo.photoScreen
+import com.rbrauwers.newsapp.photo.photoSummaryScreen
 
 internal const val settingsBaseRoute = "settings"
 internal const val photoIdArg = "id"

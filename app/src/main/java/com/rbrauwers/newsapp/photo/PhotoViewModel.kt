@@ -1,7 +1,8 @@
-package com.rbrauwers.newsapp.settings
+package com.rbrauwers.newsapp.photo
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.rbrauwers.newsapp.settings.photoIdArg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
