@@ -20,7 +20,8 @@ internal class PhotoViewModel @Inject constructor(
     private val _uiState =
         MutableStateFlow(
             UiState(
-                photoId = if (photoId == null) "N/A" else photoId.toString(),
+                photoDescription = if (photoId == null) "N/A" else photoId.toString(),
+                photoId = photoId ?: -1,
                 nextPhotoId = when {
                     photoId == null || photoId!! >= 3 -> null
                     else -> photoId!! + 1
@@ -30,7 +31,8 @@ internal class PhotoViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     data class UiState(
-        val photoId: String = "",
+        val photoDescription: String = "",
+        val photoId: Int = -1,
         val nextPhotoId: Int? = null,
         val nextPhotoIsEnabled: Boolean = nextPhotoId != null,
         val summaryIsEnabled: Boolean = nextPhotoId == null

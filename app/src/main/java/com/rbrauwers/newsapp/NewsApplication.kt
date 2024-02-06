@@ -4,6 +4,8 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import com.rbrauwers.newsapp.data.repository.HeadlineRepository
@@ -17,7 +19,7 @@ import javax.inject.Inject
 const val SERVICE_CHANNEL_ID = "newsAppForegroundServiceChannel"
 
 @HiltAndroidApp
-class NewsApplication : Application(), ImageLoaderFactory {
+class NewsApplication : Application(), ImageLoaderFactory, Configuration.Provider {
 
     @Inject
     lateinit var sourceRepository: SourceRepository
@@ -25,9 +27,12 @@ class NewsApplication : Application(), ImageLoaderFactory {
     @Inject
     lateinit var headlinesRepository: HeadlineRepository
 
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
     override fun onCreate() {
         super.onCreate()
-        sync()
+        //sync()
         createNotificationChannel()
     }
 
@@ -36,6 +41,11 @@ class NewsApplication : Application(), ImageLoaderFactory {
             .crossfade(true)
             .build()
     }
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     private fun sync() {
         MainScope().launch(context = Dispatchers.IO) {
