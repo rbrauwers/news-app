@@ -2,7 +2,6 @@ package com.rbrauwers.newsapp.settings
 
 import android.Manifest
 import android.content.Intent
-import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -74,8 +73,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 val settingsScreen = Screen(
-    baseRoute = "settings",
-    route = "settings",
+    baseRoute = settingsBaseRoute,
+    route = settingsBaseRoute,
     title = R.string.settings,
     icon = Icons.Default.Settings
 )
@@ -88,6 +87,7 @@ private val permissionsToRequest = arrayOf(
 @Composable
 internal fun SettingsRoute(
     onBackClick: () -> Unit,
+    onNavigateToPhoto: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
@@ -114,7 +114,8 @@ internal fun SettingsRoute(
         onDismissPermission = viewModel::dismissDialog,
         onRemoveLikes = viewModel::onRemoveLikes,
         onAuthenticationResult = viewModel::onAuthenticationResult,
-        biometricAuthenticator = viewModel.biometricAuthenticator
+        biometricAuthenticator = viewModel.biometricAuthenticator,
+        onNavigateToPhoto = onNavigateToPhoto
     )
 }
 
@@ -125,6 +126,7 @@ private fun SettingsScreen(
     onPermissionResult: (PermissionResult) -> Unit,
     onDismissPermission: () -> Unit,
     onRemoveLikes: (List<Article>) -> Unit,
+    onNavigateToPhoto: () -> Unit,
     onAuthenticationResult: (BiometricAuthenticator.BiometricStatus) -> Unit,
     biometricAuthenticator: BiometricAuthenticator
 ) {
@@ -145,7 +147,8 @@ private fun SettingsScreen(
                     onDismissPermission = onDismissPermission,
                     onRemoveLikes = onRemoveLikes,
                     biometricAuthenticator = biometricAuthenticator,
-                    onAuthenticationResult = onAuthenticationResult
+                    onAuthenticationResult = onAuthenticationResult,
+                    onNavigateToPhoto = onNavigateToPhoto
                 )
             }
         }
@@ -158,6 +161,7 @@ private fun Success(
     onPermissionResult: (PermissionResult) -> Unit,
     onDismissPermission: () -> Unit,
     onRemoveLikes: (List<Article>) -> Unit,
+    onNavigateToPhoto: () -> Unit,
     onAuthenticationResult: (BiometricAuthenticator.BiometricStatus) -> Unit,
     biometricAuthenticator: BiometricAuthenticator
 ) {
@@ -211,6 +215,15 @@ private fun Success(
             }
         ) {
             Text("Stop sync service")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onNavigateToPhoto
+        ) {
+            Text("Photo upload")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -461,6 +474,7 @@ private fun ScreenPreview() {
         onDismissPermission = { },
         onRemoveLikes = { },
         onAuthenticationResult = { },
+        onNavigateToPhoto = { },
         biometricAuthenticator = object : BiometricAuthenticator {
             override fun authenticate(
                 activity: FragmentActivity,

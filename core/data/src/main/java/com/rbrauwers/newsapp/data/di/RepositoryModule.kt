@@ -10,9 +10,11 @@ import com.rbrauwers.newsapp.common.CryptoManager
 import com.rbrauwers.newsapp.data.datastore.userSettingsDataStore
 import com.rbrauwers.newsapp.data.repository.ArticleRemoteMediator
 import com.rbrauwers.newsapp.data.repository.CountryRepository
+import com.rbrauwers.newsapp.data.repository.DefaultPhotoWorkerRepository
 import com.rbrauwers.newsapp.data.repository.DefaultUserSettingsRepository
 import com.rbrauwers.newsapp.data.repository.GraphQLCountryRepository
 import com.rbrauwers.newsapp.data.repository.HeadlineRepository
+import com.rbrauwers.newsapp.data.repository.PhotoWorkerRepository
 import com.rbrauwers.newsapp.data.repository.SourceRepository
 import com.rbrauwers.newsapp.data.repository.SyncedHeadlineRepository
 import com.rbrauwers.newsapp.data.repository.SyncedSourceRepository
@@ -20,6 +22,7 @@ import com.rbrauwers.newsapp.data.repository.UserSettingsRepository
 import com.rbrauwers.newsapp.data.serializers.UserSettingsSerializer
 import com.rbrauwers.newsapp.database.NewsDatabase
 import com.rbrauwers.newsapp.database.dao.HeadlineDao
+import com.rbrauwers.newsapp.database.dao.PhotoWorkerDao
 import com.rbrauwers.newsapp.database.dao.SourceDao
 import com.rbrauwers.newsapp.database.model.ArticleEntity
 import com.rbrauwers.newsapp.model.UserSettings
@@ -99,5 +102,11 @@ object RepositoryModule {
         dataStore = dataStore,
         coroutineContext = Dispatchers.IO
     )
+
+    @Provides
+    @Singleton
+    fun providePhotoWorkerRepository(
+        dao: PhotoWorkerDao
+    ) : PhotoWorkerRepository = DefaultPhotoWorkerRepository(dao = dao)
 
 }

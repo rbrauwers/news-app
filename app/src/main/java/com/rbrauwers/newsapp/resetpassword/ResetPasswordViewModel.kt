@@ -27,7 +27,6 @@ internal class ResetPasswordViewModel @Inject constructor(
         statusState
     ) { userSettings, input, status ->
         val isValidEmail = userSettings.username == input.email && !input.email.isNullOrEmpty()
-        println("qqq userSettings: $userSettings")
 
         UiState(
             email = input.email.orEmpty(),

@@ -44,6 +44,8 @@ import com.rbrauwers.newsapp.profile.navigateToProfile
 import com.rbrauwers.newsapp.profile.profileScreen
 import com.rbrauwers.newsapp.resetpassword.resetPasswordScreen
 import com.rbrauwers.newsapp.settings.navigateToSettings
+import com.rbrauwers.newsapp.settings.photoScreen
+import com.rbrauwers.newsapp.settings.photoSummaryScreen
 import com.rbrauwers.newsapp.settings.settingsScreen
 import com.rbrauwers.newsapp.source.SourcesNavigationBarItem
 import com.rbrauwers.newsapp.source.sourcesNavHost
@@ -176,6 +178,8 @@ private fun Content() {
                     profileScreen(navController = navController)
                     resetPasswordScreen(navController = navController)
                     settingsScreen(navController = navController)
+                    photoScreen(navController = navController)
+                    photoSummaryScreen(navController = navController)
                 }
             }
         }

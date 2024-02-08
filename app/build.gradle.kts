@@ -66,10 +66,12 @@ android {
 dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.work)
     kapt(libs.hilt.compiler)
 
     implementation(libs.coil.compose)
     implementation(libs.profile.installer)
+    implementation(libs.work.runtime)
 
     implementation(project(":core:common"))
     implementation(project(":core:data"))

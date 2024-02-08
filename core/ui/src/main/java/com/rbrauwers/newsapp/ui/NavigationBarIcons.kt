@@ -2,6 +2,7 @@ package com.rbrauwers.newsapp.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
@@ -18,6 +19,16 @@ fun BackNavigationIcon(onBackClick: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = null
+        )
+    }
+}
+
+@Composable
+fun CloseNavigationIcon(onCloseClick: () -> Unit) {
+    IconButton(onClick = onCloseClick) {
+        Icon(
+            imageVector = Icons.Default.Close,
             contentDescription = null
         )
     }
