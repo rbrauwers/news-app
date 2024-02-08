@@ -22,5 +22,6 @@ fun <T> Flow<T>.asResult(): Flow<Result<T>> {
             // Do not suppress coroutine cancellations
             if (it is CancellationException) throw it
             emit(Result.Error(it))
+            println("Flow error: $it")
         }
 }

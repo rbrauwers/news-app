@@ -260,7 +260,7 @@ class ExampleUnitTest {
 
     /**
      * Will not block the main thread.
-     * It seems that delay function has it specifics, causing the caller thread not block.
+     * Reason: delay is a suspend function (it calls suspendCancellableCoroutine).
      */
     /*
     fun longOperation() {

@@ -6,8 +6,8 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
+import androidx.work.Data
 import androidx.work.ForegroundInfo
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -28,34 +28,34 @@ class PhotoWorker @AssistedInject constructor(
         inputData.getInt(KEY_PHOTO_ID, -1)
     }
 
-    private val specs = listOf(
-        PhotoSpecs(initialDuration = 4000, uploadDuration = 10000, finalDuration = 4000),
-        PhotoSpecs(initialDuration = 4000, uploadDuration = 20000, finalDuration = 4000),
-        PhotoSpecs(initialDuration = 2000, uploadDuration = 7000, finalDuration = 4000)
-    )
-
     override suspend fun doWork(): Result {
         upload()
         return Result.success()
     }
 
     private suspend fun upload() {
-        val specs = specs.getOrNull(photoId - 1) ?: return
-        val step = 500L
+        val specs = PhotoWorker.specs.firstOrNull { it.photoId == photoId } ?: return
+        val step = 300L
 
         setForeground(createForegroundInfo("Initializing"))
+        setProgress(ProgressData.Initializing(photoId = photoId))
         delay(specs.initialDuration)
 
         for (progress in 0..specs.uploadDuration step step) {
-            val relativeProgress = ((progress.toDouble() / specs.uploadDuration.toDouble()) * 100.0).roundToLong()
-            //println("progress: $progress")
-            //println("[$photoId] relativeProgress: $relativeProgress")
+            val relativeProgress =
+                ((progress.toDouble() / specs.uploadDuration.toDouble()) * 100.0).roundToLong()
             setForeground(createForegroundInfo("Uploading $relativeProgress%"))
+            setProgress(ProgressData.InProgress(photoId = photoId, progress = relativeProgress))
             delay(step)
         }
 
         setForeground(createForegroundInfo("Finishing"))
+        setProgress(ProgressData.Finished(photoId = photoId))
         delay(specs.finalDuration)
+    }
+
+    private suspend fun setProgress(progressData: ProgressData) {
+        setProgress(progressData.toWorkData())
     }
 
     private fun createForegroundInfo(progress: String): ForegroundInfo {
@@ -84,23 +84,66 @@ class PhotoWorker @AssistedInject constructor(
     }
 
     private data class PhotoSpecs(
+        val photoId: Int,
         val initialDuration: Long,
         val uploadDuration: Long,
         val finalDuration: Long
     )
 
-    companion object {
-        const val KEY_PHOTO_ID = "photoId"
+    sealed interface ProgressData {
+        val photoId: Int
 
-        fun enqueue(context: Context, photoId: Int) {
-            val workRequest = OneTimeWorkRequestBuilder<PhotoWorker>().setInputData(
-                workDataOf(
-                    Pair(KEY_PHOTO_ID, photoId)
-                )
-            ).build()
-            WorkManager.getInstance(context).enqueue(workRequest)
-        }
-
+        data class Blocked(override  val photoId: Int): ProgressData
+        data class Cancelled(override  val photoId: Int): ProgressData
+        data class Enqueued(override  val photoId: Int): ProgressData
+        data class Failed(override  val photoId: Int): ProgressData
+        data class Initializing(override val photoId: Int) : ProgressData
+        data class Finished(override val photoId: Int) : ProgressData
+        data class InProgress(override val photoId: Int, val progress: Long) : ProgressData
     }
 
+    companion object {
+        const val KEY_PHOTO_ID = "photoId"
+        const val KEY_PROGRESS = "progress"
+        const val KEY_PROGRESS_STATE = "progressState"
+
+        private val specs = listOf(
+            PhotoSpecs(
+                photoId = 1,
+                initialDuration = 4000,
+                uploadDuration = 10000,
+                finalDuration = 4000
+            ),
+            PhotoSpecs(
+                photoId = 2,
+                initialDuration = 4000,
+                uploadDuration = 20000,
+                finalDuration = 4000
+            ),
+            PhotoSpecs(
+                photoId = 3,
+                initialDuration = 2000,
+                uploadDuration = 7000,
+                finalDuration = 4000
+            )
+        )
+
+        val photosCount = specs.size
+    }
+
+}
+
+private fun PhotoWorker.ProgressData.toWorkData(): Data {
+    val photoIdPair = Pair(PhotoWorker.KEY_PHOTO_ID, photoId)
+    val progressStatePair = Pair(PhotoWorker.KEY_PROGRESS_STATE, this.javaClass.name)
+
+    return when (this) {
+        is PhotoWorker.ProgressData.InProgress -> {
+            workDataOf(photoIdPair, progressStatePair, Pair(PhotoWorker.KEY_PROGRESS, progress))
+        }
+
+        else -> {
+            workDataOf(photoIdPair, progressStatePair)
+        }
+    }
 }

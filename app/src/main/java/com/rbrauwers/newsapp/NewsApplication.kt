@@ -32,7 +32,7 @@ class NewsApplication : Application(), ImageLoaderFactory, Configuration.Provide
 
     override fun onCreate() {
         super.onCreate()
-        //sync()
+        sync()
         createNotificationChannel()
     }
 
@@ -45,6 +45,7 @@ class NewsApplication : Application(), ImageLoaderFactory, Configuration.Provide
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
+            .setMinimumLoggingLevel(android.util.Log.INFO)
             .build()
 
     private fun sync() {

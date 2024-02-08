@@ -1,6 +1,5 @@
 package com.rbrauwers.newsapp.photo
 
-import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,7 +66,8 @@ internal fun PhotoRoute(
         uiState = uiState,
         modifier = modifier,
         onNavigateToNextPhoto = onNavigateToNextPhoto,
-        onNavigateToSummary = onNavigateToSummary
+        onNavigateToSummary = onNavigateToSummary,
+        onEnqueueWork = viewModel::enqueueWork
     )
 }
 
@@ -77,10 +76,9 @@ private fun PhotoScreen(
     uiState: PhotoViewModel.UiState,
     onNavigateToNextPhoto: (Int) -> Unit,
     onNavigateToSummary: () -> Unit,
+    onEnqueueWork: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -97,17 +95,17 @@ private fun PhotoScreen(
         if (uiState.nextPhotoIsEnabled) {
             FilledTonalButton(onClick = {
                 uiState.nextPhotoId?.let { nextPhotoId ->
-                    uiState.enqueueUpload(context = context)
+                    onEnqueueWork()
                     onNavigateToNextPhoto(nextPhotoId)
                 }
-            }) {
+            }, modifier = Modifier.fillMaxWidth()) {
                 Text(text = "Next photo")
             }
         }
 
         if (uiState.summaryIsEnabled) {
             FilledTonalButton(onClick = {
-                uiState.enqueueUpload(context)
+                onEnqueueWork()
                 onNavigateToSummary()
             }, modifier = Modifier.fillMaxWidth()) {
                 Text(text = "Go to summary")
@@ -116,15 +114,13 @@ private fun PhotoScreen(
     }
 }
 
-private fun PhotoViewModel.UiState.enqueueUpload(context: Context) {
-    PhotoWorker.enqueue(context = context, photoId = photoId)
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun PhotoScreenPreview() {
     PhotoScreen(
         uiState = PhotoViewModel.UiState(photoDescription = "1"),
         onNavigateToNextPhoto = { },
-        onNavigateToSummary = { })
+        onNavigateToSummary = { },
+        onEnqueueWork = { }
+    )
 }
