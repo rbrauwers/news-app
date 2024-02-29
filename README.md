@@ -28,3 +28,4 @@ newsApiKey=YOUR_API_KEY
 - To generate coverage report, run `./gradlew koverHtmlReportDebug`
 
 Part 1 change
+Part 2 change
