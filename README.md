@@ -26,3 +26,5 @@ newsApiKey=YOUR_API_KEY
 - Instrumental tests runs with [Robolectric](https://robolectric.org/)
 - Code coverage is generated with [Kover](https://github.com/Kotlin/kotlinx-kover)
 - To generate coverage report, run `./gradlew koverHtmlReportDebug`
+
+Part 1 change
